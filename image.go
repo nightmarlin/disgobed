@@ -1,4 +1,4 @@
-package embeds
+package discordgoembedwrapper
 
 import (
 	"github.com/bwmarrin/discordgo"

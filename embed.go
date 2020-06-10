@@ -1,5 +1,5 @@
-// Wraps the discordgo embed with helper functions to facilitate easier construction
-package embeds
+// Package embeds Wraps the discordgo embed with helper functions to facilitate easier construction
+package discordgoembedwrapper
 
 import (
 	"time"
