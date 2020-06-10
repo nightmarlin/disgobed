@@ -49,10 +49,14 @@ func (a *Author) SetIconURL(iconUrl string) *Author {
 }
 
 /*
-SetName takes a string and sets the Author's name to that value. It then returns the pointer to the Author
+SetName takes a string and sets the Author's name to that value. It then returns the pointer to the Author. The discord
+API limits Author names to 256 characters, so this function will do nothing if len(name) > 256
+(This function fails silently)
 */
 func (a *Author) SetName(name string) *Author {
-	a.Name = name
+	if len(name) <= 256 {
+		a.Name = name
+	}
 	return a
 }
 

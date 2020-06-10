@@ -48,18 +48,26 @@ func NewEmbed() *Embed {
 }
 
 /*
-SetTitle edits the embed's title and returns the pointer to the embed
+SetTitle edits the embed's title and returns the pointer to the embed. The discord API limits embed titles to 256
+characters, so this function will do nothing if len(title) > 256
+(This function fails silently)
 */
 func (e *Embed) SetTitle(title string) *Embed {
-	e.Title = title
+	if len(title) <= 256 {
+		e.Title = title
+	}
 	return e
 }
 
 /*
-SetDescription edits the embed's description and returns the pointer to the embed
+SetDescription edits the embed's description and returns the pointer to the embed. The discord API limits embed
+descriptions to 2048 characters, so this function will do nothing if len(desc) > 2048
+(This function fails silently)
 */
 func (e *Embed) SetDescription(desc string) *Embed {
-	e.Description = desc
+	if len(desc) <= 2048 {
+		e.Description = desc
+	}
 	return e
 }
 
@@ -133,7 +141,10 @@ func (e *Embed) OutlineAllFields() *Embed {
 
 /*
 AddFields takes N Field structures and adds them to the embed, then returns the pointer to the embed.
-Note that Field structures are `Finalize`d once added and should not be changed after being added
+Note that Field structures are `Finalize`d once added and should not be changed after being added.
+The discord API limits embeds to having 25 Fields, so this function will add the first items from the list until that
+limit is reached
+(This function fails silently)
 */
 func (e *Embed) AddFields(fields ...*Field) *Embed {
 	for _, f := range fields {
@@ -144,7 +155,9 @@ func (e *Embed) AddFields(fields ...*Field) *Embed {
 
 /*
 AddRawFields takes N discordgo.MessageEmbedField structures and adds them to the embed, then returns the pointer to the
-embed
+embed. The discord API limits embeds to having 25 Fields, so this function will add the first items from the list until
+that limit is reached
+(This function fails silently)
 */
 func (e *Embed) AddRawFields(fields ...*discordgo.MessageEmbedField) *Embed {
 	for _, f := range fields {
@@ -155,7 +168,10 @@ func (e *Embed) AddRawFields(fields ...*discordgo.MessageEmbedField) *Embed {
 
 /*
 AddField takes a Field structure and adds it to the embed, then returns the pointer to the embed.
-Note that the Field structure is `Finalize`d once added and should not be changed after being added
+Note that the Field structure is `Finalize`d once added and should not be changed after being added.
+The discord API limits embeds to having 25 Fields, so this function will not add any fields if the limit has already
+been reached
+(This function fails silently)
 */
 func (e *Embed) AddField(field *Field) *Embed {
 	return e.AddRawField(field.Finalize())
@@ -163,10 +179,14 @@ func (e *Embed) AddField(field *Field) *Embed {
 
 /*
 AddRawField takes a discordgo.MessageEmbedField structure and adds it to the embed, then returns the pointer to the
-embed
+embed. The discord API limits embeds to having 25 Fields, so this function will not add any fields if the limit has
+already been reached
+(This function fails silently)
 */
 func (e *Embed) AddRawField(field *discordgo.MessageEmbedField) *Embed {
-	e.Fields = append(e.Fields, field)
+	if len(e.Fields) < 25 {
+		e.Fields = append(e.Fields, field)
+	}
 	return e
 }
 
