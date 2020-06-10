@@ -6,13 +6,13 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// TODO: Write this
 /*
 ValidateEmbed returns whether or not discord is likely accept the embed attached to it. If discord is unlikely to
 accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
 urls
 */
 func (e *Embed) ValidateEmbed(msg *discordgo.Message) (bool, *[]string) {
+	// TODO: Write this
 	return ValidateEmbed(*e.Finalize(), msg)
 }
 
