@@ -272,3 +272,47 @@ func (e *Embed) SetRawImage(img *discordgo.MessageEmbedImage) *Embed {
 	e.Image = img
 	return e
 }
+
+const (
+	// RichEmbedType describes a rich embed - generally ignored by clients
+	RichEmbedType = `rich`
+
+	// ImageEmbedType describes an image embed - generally ignored by clients
+	ImageEmbedType = `image`
+
+	// VideoEmbedType describes a video embed - generally ignored by clients
+	VideoEmbedType = `video`
+
+	// GifvEmbedType describes a gifv embed - generally ignored by clients
+	GifvEmbedType = `gifv`
+
+	// LinkEmbedType describes a link embed - generally ignored by clients
+	LinkEmbedType = `link`
+
+	// ArticleEmbedType describes an article embed - generally ignored by clients
+	ArticleEmbedType = `article`
+)
+
+/*
+checkTypeValid checks if the embed type is one of the pre-determined constants and returns true if it is
+*/
+func checkTypeValid(embedType string) bool {
+	return embedType == RichEmbedType ||
+		embedType == ImageEmbedType ||
+		embedType == VideoEmbedType ||
+		embedType == GifvEmbedType ||
+		embedType == LinkEmbedType ||
+		embedType == ArticleEmbedType
+}
+
+/*
+SetType checks if the embed type passed to it is valid. If it is, it sets the embed's type to that, otherwise it does
+nothing. It then returns the pointer to the embed
+(This function fails silently)
+*/
+func (e *Embed) SetType(embedType string) *Embed {
+	if checkTypeValid(embedType) {
+		e.Type = embedType
+	}
+	return e
+}
