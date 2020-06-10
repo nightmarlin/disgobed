@@ -39,6 +39,7 @@ func (a *Author) SetURL(url string) *Author {
 /*
 SetIconURL takes an image address string prefixed with https:// / http:// / attachment:// and adds it to the Author (if
 the string does not start with one of these, no URL will be added). It then returns the pointer to the Author structure
+(This function fails silently)
 */
 func (a *Author) SetIconURL(iconUrl string) *Author {
 	if checkValidIconURL(iconUrl) {
@@ -59,6 +60,7 @@ func (a *Author) SetName(name string) *Author {
 SetProxyIconURL takes an image address string prefixed with https:// / http:// / attachment:// and adds it to the Author
 (if the string does not start with one of these, no URL will be added). It then returns the pointer to the Author
 structure
+(This function fails silently)
 */
 func (a *Author) SetProxyIconURL(proxyIconUrl string) *Author {
 	if checkValidIconURL(proxyIconUrl) {
