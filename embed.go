@@ -261,7 +261,13 @@ SetThumbnail takes a Thumbnail structure and sets the embed's thumbnail field to
 embed. Note that the Thumbnail structure is `Finalize`d once added and should not be changed after being added
 */
 func (e *Embed) SetThumbnail(thumb *Thumbnail) *Embed {
-	return e.SetRawThumbnail(thumb.Finalize())
+	res, errs := thumb.Finalize()
+	if errs != nil {
+		for _, err := range *errs {
+			e.addRawError(err)
+		}
+	}
+	return e.SetRawThumbnail(res)
 }
 
 /*
