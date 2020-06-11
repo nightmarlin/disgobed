@@ -2,7 +2,6 @@
 package discordgoembedwrapper
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -49,7 +48,7 @@ func (e *Embed) addError(format string, values ...interface{}) {
 	if e.Errors == nil {
 		e.Errors = &[]error{}
 	}
-	*e.Errors = append(*e.Errors, errors.New(fmt.Sprintf(format, values...)))
+	*e.Errors = append(*e.Errors, fmt.Errorf(format, values...))
 }
 
 /*

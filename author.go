@@ -1,7 +1,6 @@
 package discordgoembedwrapper
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
@@ -32,7 +31,7 @@ func (a *Author) addError(format string, values ...interface{}) {
 	if a.Errors == nil {
 		a.Errors = &[]error{}
 	}
-	*a.Errors = append(*a.Errors, errors.New(fmt.Sprintf(format, values...)))
+	*a.Errors = append(*a.Errors, fmt.Errorf(format, values...))
 }
 
 /*

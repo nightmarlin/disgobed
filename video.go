@@ -33,7 +33,7 @@ func (v *Video) addError(format string, values ...interface{}) {
 	if v.Errors == nil {
 		v.Errors = &[]error{}
 	}
-	*v.Errors = append(*v.Errors, errors.New(fmt.Sprintf(format, values...)))
+	*v.Errors = append(*v.Errors, fmt.Errorf(format, values...))
 }
 
 /*
