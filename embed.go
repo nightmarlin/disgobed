@@ -43,7 +43,7 @@ func (e *Embed) Finalize() (*discordgo.MessageEmbed, *[]error) {
 
 /*
 addError takes a message string and adds it to the error slice stored in Embed. If the pointer is nil a new error slice
-is created. this function takes the same inputs as fmt.Sprintf
+is created. This function takes the same inputs as fmt.Sprintf
 */
 func (e *Embed) addError(format string, values ...interface{}) {
 	if e.Errors == nil {
@@ -83,7 +83,7 @@ func (e *Embed) SetTitle(title string) *Embed {
 	if len(title) <= 256 {
 		e.Title = title
 	} else {
-		e.addError(`embed title exceeds 256 characters: len(title) = %v | %v`, len(title), title)
+		e.addError(`embed title exceeds 256 characters: len(title) = %v | '%v'`, len(title), title)
 	}
 	return e
 }
@@ -293,10 +293,17 @@ func (e *Embed) SetRawProvider(provider *discordgo.MessageEmbedProvider) *Embed 
 
 /*
 SetFooter sets the embed's footer property to the Footer passed to it, then returns the pointer to the embed.
-Note that the Footer structure is `Finalize`d once added and should not be changed after being added
+Note that the Footer structure is `Finalize`d once added and should not be changed after being added. Footer errors
+will be propagated into the embed struct
 */
 func (e *Embed) SetFooter(footer *Footer) *Embed {
-	return e.SetRawFooter(footer.Finalize())
+	res, errs := footer.Finalize()
+	if errs != nil {
+		for _, err := range *errs {
+			e.addRawError(err)
+		}
+	}
+	return e.SetRawFooter(res)
 }
 
 /*
@@ -327,10 +334,17 @@ func (e *Embed) SetRawVideo(vid *discordgo.MessageEmbedVideo) *Embed {
 
 /*
 SetImage sets the embed's image property to the Image passed to it, then returns the pointer to the embed.
-Note that the Image structure is `Finalize`d once added and should not be changed after being added
+Note that the Image structure is `Finalize`d once added and should not be changed after being added. Image errors
+will be propagated into the embed struct
 */
 func (e *Embed) SetImage(img *Image) *Embed {
-	return e.SetRawImage(img.Finalize())
+	res, errs := img.Finalize()
+	if errs != nil {
+		for _, err := range *errs {
+			e.addRawError(err)
+		}
+	}
+	return e.SetRawImage(res)
 }
 
 /*

@@ -26,7 +26,7 @@ func (a *Author) Finalize() (*discordgo.MessageEmbedAuthor, *[]error) {
 
 /*
 addError takes a message string and adds it to the error slice stored in Author. If the pointer is nil a new error slice
-is created. this function takes the same inputs as fmt.Sprintf
+is created. This function takes the same inputs as fmt.Sprintf
 */
 func (a *Author) addError(format string, values ...interface{}) {
 	if a.Errors == nil {
@@ -78,7 +78,7 @@ func (a *Author) SetName(name string) *Author {
 	if len(name) <= 256 {
 		a.Name = name
 	} else {
-		a.addError(`author name exceeds 256 characters`)
+		a.addError(`author name exceeds 256 characters: len(name) = %v | '%v'`, len(name), name)
 	}
 	return a
 }

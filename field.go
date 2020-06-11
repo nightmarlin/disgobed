@@ -25,7 +25,7 @@ func (f *Field) Finalize() (*discordgo.MessageEmbedField, *[]error) {
 }
 
 /*
-addError takes a message string and adds it to the error slice stored in Author. If the pointer is nil a new error slice
+addError takes a message string and adds it to the error slice stored in Field. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */
 func (f *Field) addError(format string, values ...interface{}) {
@@ -52,7 +52,7 @@ func (f *Field) SetName(name string) *Field {
 	if len(name) <= 256 {
 		f.Name = name
 	} else {
-		f.addError(`field name exceeds 256 characters: len(name) = %v | %v`, len(name), name)
+		f.addError(`field name exceeds 256 characters: len(name) = %v | '%v'`, len(name), name)
 	}
 	return f
 }
