@@ -7,13 +7,18 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// Footer wraps the discordgo.MessageEmbedFooter type and adds features
+/*
+Footer wraps the discordgo.MessageEmbedFooter type and adds features
+*/
 type Footer struct {
 	*discordgo.MessageEmbedFooter
 	Errors *[]error
 }
 
-// Finalize strips away the extra functions and returns the wrapped type
+/*
+Finalize strips away the extra functions and returns the wrapped type. It should always be called before a footer is
+attached. Finalize will also purge the error cache!
+*/
 func (f *Footer) Finalize() (*discordgo.MessageEmbedFooter, *[]error) {
 	defer func(f *Footer) { f.Errors = nil }(f)
 	return f.MessageEmbedFooter, f.Errors
