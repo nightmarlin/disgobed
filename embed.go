@@ -53,6 +53,17 @@ func (e *Embed) addError(format string, values ...interface{}) {
 }
 
 /*
+addRawError takes a pre-existing error and adds it to the stored slice. If the pointer is nil a new error slice is
+created.
+*/
+func (e *Embed) addRawError(err error) {
+	if e.Errors == nil {
+		e.Errors = &[]error{}
+	}
+	*e.Errors = append(*e.Errors, err)
+}
+
+/*
 NewEmbed creates and returns an empty embed
 */
 func NewEmbed() *Embed {
@@ -72,7 +83,7 @@ func (e *Embed) SetTitle(title string) *Embed {
 	if len(title) <= 256 {
 		e.Title = title
 	} else {
-		e.addError(`embed title exceeded 256 characters`)
+		e.addError(`embed title exceeds 256 characters`)
 	}
 	return e
 }
@@ -86,7 +97,7 @@ func (e *Embed) SetDescription(desc string) *Embed {
 	if len(desc) <= 2048 {
 		e.Description = desc
 	} else {
-		e.addError(`embed description exceeded 2048 characters`)
+		e.addError(`embed description exceeds 2048 characters`)
 	}
 	return e
 }
@@ -108,7 +119,7 @@ func (e *Embed) SetColor(color int) *Embed {
 	if color >= 0 && color < 16777215 {
 		e.Color = color
 	} else {
-		e.addError(`color '%v' is an invalid color. colors must be between 0 and 16777215`, color)
+		e.addError(`color '%v' is not between 0 and 16777215`, color)
 	}
 	return e
 }
@@ -209,17 +220,25 @@ func (e *Embed) AddRawField(field *discordgo.MessageEmbedField) *Embed {
 	if len(e.Fields) < 25 {
 		e.Fields = append(e.Fields, field)
 	} else {
-		e.addError(`adding field '%v' would cause field count to exceed 25. this is disallowed`, field.Name)
+		e.addError(`adding field '%v' would cause field count to exceed 25`, field.Name)
 	}
 	return e
 }
 
 /*
 SetAuthor takes an Author structure and sets the embed's author field to it, then returns the pointer to the embed.
-Note that the Author structure is `Finalize`d once added and should not be changed after being added
+Note that the Author structure is `Finalize`d once added and should not be changed after being added. All errors are
+propagated to the main embed
 */
 func (e *Embed) SetAuthor(author *Author) *Embed {
-	return e.SetRawAuthor(author.Finalize())
+	res, errs := author.Finalize()
+	if errs != nil {
+		for _, v := range *errs {
+			e.addRawError(v)
+		}
+	}
+
+	return e.SetRawAuthor(res)
 }
 
 /*

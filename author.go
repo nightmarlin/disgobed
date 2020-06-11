@@ -1,6 +1,9 @@
 package discordgoembedwrapper
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -9,13 +12,26 @@ Author wraps the discordgo.MessageEmbedAuthor type and adds features
 */
 type Author struct {
 	*discordgo.MessageEmbedAuthor
+	Errors *[]error
 }
 
 /*
 Finalize strips away the extra functions and returns the wrapped type
 */
-func (a *Author) Finalize() *discordgo.MessageEmbedAuthor {
-	return a.MessageEmbedAuthor
+func (a *Author) Finalize() (*discordgo.MessageEmbedAuthor, *[]error) {
+	defer func(a *Author) { a.Errors = nil }(a)
+	return a.MessageEmbedAuthor, a.Errors
+}
+
+/*
+addError takes a message string and adds it to the error slice stored in Author. If the pointer is nil a new error slice
+is created. this function takes the same inputs as fmt.Sprintf
+*/
+func (a *Author) addError(format string, values ...interface{}) {
+	if a.Errors == nil {
+		a.Errors = &[]error{}
+	}
+	*a.Errors = append(*a.Errors, errors.New(fmt.Sprintf(format, values...)))
 }
 
 /*
@@ -24,6 +40,7 @@ NewAuthor creates and returns a blank author struct
 func NewAuthor() *Author {
 	res := &Author{
 		MessageEmbedAuthor: &discordgo.MessageEmbedAuthor{},
+		Errors:             nil,
 	}
 	return res
 }
@@ -44,6 +61,9 @@ the string does not start with one of these, no URL will be added). It then retu
 func (a *Author) SetIconURL(iconUrl string) *Author {
 	if checkValidIconURL(iconUrl) {
 		a.IconURL = iconUrl
+	} else {
+		a.addError(`author iconUrl '%v' does not start with "http://" | "https://" | "attachment://"`,
+			iconUrl)
 	}
 	return a
 }
@@ -56,6 +76,8 @@ API limits Author names to 256 characters, so this function will do nothing if l
 func (a *Author) SetName(name string) *Author {
 	if len(name) <= 256 {
 		a.Name = name
+	} else {
+		a.addError(`author name exceeds 256 characters`)
 	}
 	return a
 }
@@ -69,6 +91,9 @@ structure
 func (a *Author) SetProxyIconURL(proxyIconUrl string) *Author {
 	if checkValidIconURL(proxyIconUrl) {
 		a.ProxyIconURL = proxyIconUrl
+	} else {
+		a.addError(`author proxyIconUrl '%v' does not start with "http://" | "https://" | "attachment://"`,
+			proxyIconUrl)
 	}
 	return a
 }
