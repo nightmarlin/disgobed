@@ -39,7 +39,9 @@ import (
     SetType(embeds.RichEmbedType). //
     SetTitle(`Test Embed`).
     SetDescription(`A very interesting text embed`).
-    SetThumbnail(`https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/DOM-model.svg/1024px-DOM-model.svg.png`).
+    SetThumbnail(disgobed.NewThumbnail().
+      SetURL(`https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/DOM-model.svg/1024px-DOM-model.svg.png`).
+      SetHW(917, 886)).
     Finalize()
 
   if errs == nil {
@@ -53,4 +55,4 @@ import (
 `Finalize()` is a really important function! The [Embed](./embed.go) struct caches all errors that
 may occur, due to validation failures or other reasons - this means that you have to actively check
 for errors. `Finalize()` makes this easy by returning the cached errors or nil as well as the final
-embed. You might find you still want to send an embed that is valid…
+embed. You might find you still want to send an embed that is invalid…
