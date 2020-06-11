@@ -42,8 +42,31 @@ func (i *Image) addError(format string, values ...interface{}) {
 	*i.Errors = append(*i.Errors, fmt.Errorf(format, values...))
 }
 
+/*
+SetURL takes an image address string prefixed with https:// / http:// / attachment:// and adds it to the Image (if
+the string does not start with one of these, no URL will be added). It then returns the pointer to the Image structure
+(This function fails silently)
+*/
 func (i *Image) SetURL(url string) *Image {
-	i.URL = url
+	if checkValidIconURL(url) {
+		i.URL = url
+	} else {
+		i.addError(`image url '%v' does not start with "http://" | "https://" | "attachment://"`, url)
+	}
+	return i
+}
+
+/*
+SetProxyURL takes an image address string prefixed with https:// / http:// / attachment:// and adds it to the Image (if
+the string does not start with one of these, no URL will be added). It then returns the pointer to the Image structure
+(This function fails silently)
+*/
+func (i *Image) SetProxyURL(proxyUrl string) *Image {
+	if checkValidIconURL(proxyUrl) {
+		i.ProxyURL = proxyUrl
+	} else {
+		i.addError(`image proxyUrl '%v' does not start with "http://" | "https://" | "attachment://"`, proxyUrl)
+	}
 	return i
 }
 

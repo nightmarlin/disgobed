@@ -42,7 +42,7 @@ func (p *Provider) SetURL(url string) *Provider {
 }
 
 /*
-SetURL sets the provider's Name field and returns the pointer to the Provider
+SetName sets the provider's Name field and returns the pointer to the Provider
 */
 func (p *Provider) SetName(name string) *Provider {
 	p.Name = name
