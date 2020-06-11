@@ -1,6 +1,6 @@
 # Disgobed &mdash; A DiscordGo Embed Wrapper
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/Nightmarlin/discordgoembedwrapper)](https://goreportcard.com/report/github.com/Nightmarlin/discordgoembedwrapper)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Nightmarlin/disgobed)](https://goreportcard.com/report/github.com/Nightmarlin/disgobed)
 
 ## About
 
