@@ -1,4 +1,4 @@
-package discordgoembedwrapper
+package disgobed
 
 import (
 	"strings"

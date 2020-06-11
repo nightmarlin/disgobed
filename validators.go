@@ -1,4 +1,4 @@
-package discordgoembedwrapper
+package disgobed
 
 import (
 	"github.com/bwmarrin/discordgo"

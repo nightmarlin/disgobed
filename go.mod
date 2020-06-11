@@ -1,4 +1,4 @@
-module github.com/Nightmarlin/discordgoembedwrapper
+module github.com/Nightmarlin/disgobed
 
 go 1.14
 

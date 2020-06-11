@@ -1,4 +1,4 @@
-# DiscordGo Embed Wrapper
+# Disgobed &mdash; A DiscordGo Embed Wrapper
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Nightmarlin/discordgoembedwrapper)](https://goreportcard.com/report/github.com/Nightmarlin/discordgoembedwrapper)
 
@@ -15,13 +15,13 @@ This library has been written to comply with the specification at the
 If using go modules:
 
 ```
-require github.com/Nightmarlin/discordgoembedwrapper
+require github.com/Nightmarlin/disgobed
 ```
 
 Else
 
 ```
-go get github.com/Nightmarlin/discordgoembedwrapper
+go get github.com/Nightmarlin/disgobed
 ```
 
 Then whenever you want to send an embedded message:
@@ -30,11 +30,12 @@ Then whenever you want to send an embedded message:
 package mypackage
 
 import (
-    embeds `github.com/Nightmarlin/discordgoembedwrapper`
+    `github.com/Nightmarlin/disgobed`
+    `github.com/bwmarrin/discordgo`
 )
 
 [...]
-  res, errs := embeds.NewEmbed(). // Generate new Embed
+  res, errs := disgobed.NewEmbed(). // Generate new Embed
     SetType(embeds.RichEmbedType). //
     SetTitle(`Test Embed`).
     SetDescription(`A very interesting text embed`).

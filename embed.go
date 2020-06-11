@@ -3,7 +3,7 @@ Package discordgoembedwrapper Wraps the discordgo embed with helper functions to
 Note that all methods in this module act ByReference, directly changing the embed they are called on, instead of
 creating and returning a new embed
 */
-package discordgoembedwrapper
+package disgobed
 
 import (
 	"fmt"
