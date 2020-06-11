@@ -1,7 +1,6 @@
 package discordgoembedwrapper
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
@@ -21,7 +20,7 @@ Finalize strips away the extra functions and returns the wrapped type. It should
 attached. Finalize will also purge the error cache!
 */
 func (v *Video) Finalize() (*discordgo.MessageEmbedVideo, *[]error) {
-	defer func(t *Thumbnail) { t.Errors = nil }(v)
+	defer func(v *Video) { v.Errors = nil }(v)
 	return v.MessageEmbedVideo, v.Errors
 }
 
