@@ -84,7 +84,7 @@ func (t *Thumbnail) SetHW(h int, w int) *Thumbnail {
 		t.Height = h
 		t.Width = w
 	} else {
-		t.addError(`thumbnail height '%t' or thumbnail width '%t' is less than or equal to 0`, h, w)
+		t.addError(`thumbnail height '%v' or thumbnail width '%v' is less than or equal to 0`, h, w)
 	}
 	return t
 }
@@ -98,7 +98,7 @@ func (t *Thumbnail) SetHeight(h int) *Thumbnail {
 	if h > 0 {
 		t.Height = h
 	} else {
-		t.addError(`thumbnail height '%t' is less than or equal to 0`, h)
+		t.addError(`thumbnail height '%v' is less than or equal to 0`, h)
 	}
 	return t
 }
@@ -112,7 +112,7 @@ func (t *Thumbnail) SetWidth(w int) *Thumbnail {
 	if w > 0 {
 		t.Width = w
 	} else {
-		t.addError(`thumbnail width '%t' is less than or equal to 0`, w)
+		t.addError(`thumbnail width '%v' is less than or equal to 0`, w)
 	}
 	return t
 }

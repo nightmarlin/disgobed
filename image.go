@@ -80,7 +80,7 @@ func (i *Image) SetHW(h int, w int) *Image {
 		i.Height = h
 		i.Width = w
 	} else {
-		i.addError(`image height '%i' or video width '%i' is less than or equal to 0`, h, w)
+		i.addError(`image height '%v' or video width '%v' is less than or equal to 0`, h, w)
 	}
 	return i
 }
@@ -94,7 +94,7 @@ func (i *Image) SetHeight(h int) *Image {
 	if h > 0 {
 		i.Height = h
 	} else {
-		i.addError(`image height '%i' is less than or equal to 0`, h)
+		i.addError(`image height '%v' is less than or equal to 0`, h)
 	}
 	return i
 }
@@ -108,7 +108,7 @@ func (i *Image) SetWidth(w int) *Image {
 	if w > 0 {
 		i.Width = w
 	} else {
-		i.addError(`image width '%i' is less than or equal to 0`, w)
+		i.addError(`image width '%v' is less than or equal to 0`, w)
 	}
 	return i
 }

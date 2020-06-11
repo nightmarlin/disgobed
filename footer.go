@@ -82,7 +82,8 @@ func (f *Footer) SetProxyIconURL(proxyIconUrl string) *Footer {
 	if checkValidIconURL(proxyIconUrl) {
 		f.ProxyIconURL = proxyIconUrl
 	} else {
-		f.addError(`footer proxyIconUrl '%v' does not start with "http://" | "https://" | "attachment://"`)
+		f.addError(`footer proxyIconUrl '%v' does not start with "http://" | "https://" | "attachment://"`,
+			proxyIconUrl)
 	}
 	return f
 }

@@ -36,7 +36,7 @@ import (
 
 [...]
   res, errs := disgobed.NewEmbed(). // Generate new Embed
-    SetType(embeds.RichEmbedType). //
+    SetType(embeds.RichEmbedType).
     SetTitle(`Test Embed`).
     SetDescription(`A very interesting text embed`).
     SetThumbnail(disgobed.NewThumbnail().
