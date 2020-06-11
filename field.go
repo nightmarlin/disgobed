@@ -24,6 +24,16 @@ func (f *Field) Finalize() (*discordgo.MessageEmbedField, *[]error) {
 }
 
 /*
+NewField creates and returns a new empty field object
+*/
+func NewField() *Field {
+	return &Field{
+		MessageEmbedField: &discordgo.MessageEmbedField{},
+		Errors:            nil,
+	}
+}
+
+/*
 addError takes a message string and adds it to the error slice stored in Field. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */

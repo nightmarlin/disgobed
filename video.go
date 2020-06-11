@@ -51,6 +51,7 @@ h <= 0 or w <= 0, this operation does nothing
 func (v *Video) SetHW(h int, w int) *Video {
 	if h > 0 && w > 0 {
 		v.Height = h
+		v.Width = w
 	} else {
 		v.addError(`video height '%v' or video width '%v' is less than or equal to 0`, h, w)
 	}
@@ -66,7 +67,7 @@ func (v *Video) SetHeight(h int) *Video {
 	if h > 0 {
 		v.Height = h
 	} else {
-		v.addError(`video height '%v' or video width '%v' is less than or equal to 0`, h)
+		v.addError(`video height '%v' is less than or equal to 0`, h)
 	}
 	return v
 }
@@ -80,7 +81,7 @@ func (v *Video) SetWidth(w int) *Video {
 	if w > 0 {
 		v.Width = w
 	} else {
-		v.addError(`video height '%v' or video width '%v' is less than or equal to 0`, w)
+		v.addError(`video width '%v' is less than or equal to 0`, w)
 	}
 	return v
 }

@@ -24,6 +24,16 @@ func (f *Footer) Finalize() (*discordgo.MessageEmbedFooter, *[]error) {
 }
 
 /*
+NewFooter creates and returns a new empty footer
+*/
+func NewFooter() *Footer {
+	return &Footer{
+		MessageEmbedFooter: &discordgo.MessageEmbedFooter{},
+		Errors:             nil,
+	}
+}
+
+/*
 addError takes a message string and adds it to the error slice stored in Footer. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */
@@ -43,7 +53,7 @@ func (f *Footer) SetIconURL(iconUrl string) *Footer {
 	if checkValidIconURL(iconUrl) {
 		f.IconURL = iconUrl
 	} else {
-		f.addError(`footer iconUrl '%v' does not start with "http://" | "https://" | "attachment://"`)
+		f.addError(`footer iconUrl '%v' does not start with "http://" | "https://" | "attachment://"`, iconUrl)
 	}
 	return f
 }

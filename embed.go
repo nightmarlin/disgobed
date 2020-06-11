@@ -1,4 +1,8 @@
-// Package discordgoembedwrapper Wraps the discordgo embed with helper functions to facilitate easier construction
+/*
+Package discordgoembedwrapper Wraps the discordgo embed with helper functions to facilitate easier construction.
+Note that all methods in this module act ByReference, directly changing the embed they are called on, instead of
+creating and returning a new embed
+*/
 package discordgoembedwrapper
 
 import (
@@ -22,9 +26,6 @@ and call the methods to set the properties, allowing for chains that look like t
 		.Finalize()
 
 for healthy embedment!
-
-Note that all methods in this module act ByReference, and as such change the embed they are called on, instead of
-creating and returning a new embed
 */
 type Embed struct {
 	*discordgo.MessageEmbed

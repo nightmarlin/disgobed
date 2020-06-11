@@ -38,8 +38,13 @@ func ValidateEmbed(embed discordgo.MessageEmbed, msg *discordgo.Message) (bool, 
 	 *      | embed description
 	 *      | footer text
 	 *   5) An embed can have a maximum of 25 attached fields
-	 *   6) (optional with presence of msg) All `attachment://` urls should reference attached items
-	 *   7) (optional with presence of msg) Message content cannot exceed 2000 characters
+	 *   6) Embed types are limited to one of "rich" | "image" | "video" | "gifv" | "link" | "article"
+	 *   7) The following fields must not be empty when present
+	 *      | footer text
+	 *      | field name
+	 *      | field value
+	 *   8) (optional with presence of msg) All `attachment://` urls should reference attached items
+	 *   9) (optional with presence of msg) Message content cannot exceed 2000 characters
 	 */
 	return true, nil
 }
