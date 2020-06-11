@@ -284,7 +284,11 @@ SetProvider allows you to set the provider of an embed. It will then return the 
 See the provider.go docs for some extra information
 */
 func (e *Embed) SetProvider(provider *Provider) *Embed {
-	return e.SetRawProvider(provider.Finalize())
+	res, errs := provider.Finalize()
+	if errs != nil { // This should never run
+		e.addAllRawErrors(errs)
+	}
+	return e.SetRawProvider(res)
 }
 
 /*
