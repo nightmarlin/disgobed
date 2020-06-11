@@ -64,6 +64,19 @@ func (e *Embed) addRawError(err error) {
 }
 
 /*
+addAllRawErrors takes a pre-existing error slice and adds it to the stored slice. If the pointer is nil a new error
+slice is created.
+*/
+func (e *Embed) addAllRawErrors(errs *[]error) {
+	if errs == nil {
+		return
+	}
+	for _, err := range *errs {
+		e.addRawError(err)
+	}
+}
+
+/*
 NewEmbed creates and returns an empty embed
 */
 func NewEmbed() *Embed {
@@ -208,11 +221,7 @@ been reached. All errors are propagated to the main embed
 */
 func (e *Embed) AddField(field *Field) *Embed {
 	res, errs := field.Finalize()
-	if errs != nil {
-		for _, err := range *errs {
-			e.addRawError(err)
-		}
-	}
+	e.addAllRawErrors(errs)
 	return e.AddRawField(res)
 }
 
@@ -238,12 +247,7 @@ propagated to the main embed
 */
 func (e *Embed) SetAuthor(author *Author) *Embed {
 	res, errs := author.Finalize()
-	if errs != nil {
-		for _, err := range *errs {
-			e.addRawError(err)
-		}
-	}
-
+	e.addAllRawErrors(errs)
 	return e.SetRawAuthor(res)
 }
 
@@ -262,11 +266,7 @@ embed. Note that the Thumbnail structure is `Finalize`d once added and should no
 */
 func (e *Embed) SetThumbnail(thumb *Thumbnail) *Embed {
 	res, errs := thumb.Finalize()
-	if errs != nil {
-		for _, err := range *errs {
-			e.addRawError(err)
-		}
-	}
+	e.addAllRawErrors(errs)
 	return e.SetRawThumbnail(res)
 }
 
@@ -304,11 +304,7 @@ will be propagated into the embed struct
 */
 func (e *Embed) SetFooter(footer *Footer) *Embed {
 	res, errs := footer.Finalize()
-	if errs != nil {
-		for _, err := range *errs {
-			e.addRawError(err)
-		}
-	}
+	e.addAllRawErrors(errs)
 	return e.SetRawFooter(res)
 }
 
@@ -326,7 +322,9 @@ SetVideo sets the embed's video property to the Video passed to it, then returns
 Note that the Video structure is `Finalize`d once added and should not be changed after being added
 */
 func (e *Embed) SetVideo(vid *Video) *Embed {
-	return e.SetRawVideo(vid.Finalize())
+	res, errs := vid.Finalize()
+	e.addAllRawErrors(errs)
+	return e.SetRawVideo(res)
 }
 
 /*
@@ -345,11 +343,7 @@ will be propagated into the embed struct
 */
 func (e *Embed) SetImage(img *Image) *Embed {
 	res, errs := img.Finalize()
-	if errs != nil {
-		for _, err := range *errs {
-			e.addRawError(err)
-		}
-	}
+	e.addAllRawErrors(errs)
 	return e.SetRawImage(res)
 }
 
