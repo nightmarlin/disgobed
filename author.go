@@ -16,7 +16,8 @@ type Author struct {
 }
 
 /*
-Finalize strips away the extra functions and returns the wrapped type
+Finalize strips away the extra functions and returns the wrapped type. It should always be called before an author is
+sent. Finalize will also purge the error cache!
 */
 func (a *Author) Finalize() (*discordgo.MessageEmbedAuthor, *[]error) {
 	defer func(a *Author) { a.Errors = nil }(a)

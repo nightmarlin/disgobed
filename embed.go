@@ -83,7 +83,7 @@ func (e *Embed) SetTitle(title string) *Embed {
 	if len(title) <= 256 {
 		e.Title = title
 	} else {
-		e.addError(`embed title exceeds 256 characters`)
+		e.addError(`embed title exceeds 256 characters: len(title) = %v | %v`, len(title), title)
 	}
 	return e
 }
@@ -97,7 +97,7 @@ func (e *Embed) SetDescription(desc string) *Embed {
 	if len(desc) <= 2048 {
 		e.Description = desc
 	} else {
-		e.addError(`embed description exceeds 2048 characters`)
+		e.addError(`embed description exceeds 2048 characters: len(desc) = %v`, len(desc))
 	}
 	return e
 }
@@ -203,11 +203,17 @@ func (e *Embed) AddRawFields(fields ...*discordgo.MessageEmbedField) *Embed {
 AddField takes a Field structure and adds it to the embed, then returns the pointer to the embed.
 Note that the Field structure is `Finalize`d once added and should not be changed after being added.
 The discord API limits embeds to having 25 Fields, so this function will not add any fields if the limit has already
-been reached
+been reached. All errors are propagated to the main embed
 (This function fails silently)
 */
 func (e *Embed) AddField(field *Field) *Embed {
-	return e.AddRawField(field.Finalize())
+	res, errs := field.Finalize()
+	if errs != nil {
+		for _, err := range *errs {
+			e.addRawError(err)
+		}
+	}
+	return e.AddRawField(res)
 }
 
 /*
@@ -233,8 +239,8 @@ propagated to the main embed
 func (e *Embed) SetAuthor(author *Author) *Embed {
 	res, errs := author.Finalize()
 	if errs != nil {
-		for _, v := range *errs {
-			e.addRawError(v)
+		for _, err := range *errs {
+			e.addRawError(err)
 		}
 	}
 
