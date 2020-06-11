@@ -2,6 +2,8 @@
 package discordgoembedwrapper
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -27,14 +29,27 @@ creating and returning a new embed
 */
 type Embed struct {
 	*discordgo.MessageEmbed
+	Errors *[]error
 }
 
 /*
-Finalize strips away the extra functions and returns the wrapped type.
-It should always be called when an embed is ready to be sent
+Finalize strips away the extra functions and returns the wrapped type. It should always be called before an embed is
+sent. Finalize will also purge the error cache!
 */
-func (e *Embed) Finalize() *discordgo.MessageEmbed {
-	return e.MessageEmbed
+func (e *Embed) Finalize() (*discordgo.MessageEmbed, *[]error) {
+	defer func(e *Embed) { e.Errors = nil }(e)
+	return e.MessageEmbed, e.Errors
+}
+
+/*
+addError takes a message string and adds it to the error slice stored in Embed. If the pointer is nil a new error slice
+is created. this function takes the same inputs as fmt.Sprintf
+*/
+func (e *Embed) addError(format string, values ...interface{}) {
+	if e.Errors == nil {
+		e.Errors = &[]error{}
+	}
+	*e.Errors = append(*e.Errors, errors.New(fmt.Sprintf(format, values...)))
 }
 
 /*
@@ -43,6 +58,7 @@ NewEmbed creates and returns an empty embed
 func NewEmbed() *Embed {
 	res := &Embed{
 		MessageEmbed: &discordgo.MessageEmbed{},
+		Errors:       nil,
 	}
 	return res
 }
@@ -55,6 +71,8 @@ characters, so this function will do nothing if len(title) > 256
 func (e *Embed) SetTitle(title string) *Embed {
 	if len(title) <= 256 {
 		e.Title = title
+	} else {
+		e.addError(`embed title exceeded 256 characters`)
 	}
 	return e
 }
@@ -67,6 +85,8 @@ descriptions to 2048 characters, so this function will do nothing if len(desc) >
 func (e *Embed) SetDescription(desc string) *Embed {
 	if len(desc) <= 2048 {
 		e.Description = desc
+	} else {
+		e.addError(`embed description exceeded 2048 characters`)
 	}
 	return e
 }
@@ -87,6 +107,8 @@ Color values must be between 0 and 16777215 otherwise the change will not be reg
 func (e *Embed) SetColor(color int) *Embed {
 	if color >= 0 && color < 16777215 {
 		e.Color = color
+	} else {
+		e.addError(`color '%v' is an invalid color. colors must be between 0 and 16777215`, color)
 	}
 	return e
 }
@@ -186,6 +208,8 @@ already been reached
 func (e *Embed) AddRawField(field *discordgo.MessageEmbedField) *Embed {
 	if len(e.Fields) < 25 {
 		e.Fields = append(e.Fields, field)
+	} else {
+		e.addError(`adding field '%v' would cause field count to exceed 25. this is disallowed`, field.Name)
 	}
 	return e
 }
@@ -301,6 +325,9 @@ nothing. It then returns the pointer to the embed
 func (e *Embed) SetType(embedType string) *Embed {
 	if checkTypeValid(embedType) {
 		e.Type = embedType
+	} else {
+		e.addError(`embed type '%v' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"`,
+			embedType)
 	}
 	return e
 }

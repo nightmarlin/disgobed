@@ -11,9 +11,12 @@ ValidateEmbed returns whether or not discord is likely accept the embed attached
 accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
 urls
 */
-func (e *Embed) ValidateEmbed(msg *discordgo.Message) (bool, *[]string) {
-	// TODO: Write this
-	return ValidateEmbed(*e.Finalize(), msg)
+func (e *Embed) ValidateEmbed(msg *discordgo.Message) (bool, *[]error) {
+	toCheck, errs := e.Finalize()
+	if errs != nil { // Make use of builtin err checking
+		return false, errs // Short-Circuit and dont run expensive checks if we already have errors
+	}
+	return ValidateEmbed(*toCheck, msg)
 }
 
 /*
@@ -21,7 +24,8 @@ ValidateEmbed returns whether or not discord is likely accept the embed attached
 accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
 urls
 */
-func ValidateEmbed(embed discordgo.MessageEmbed, msg *discordgo.Message) (bool, *[]string) {
+func ValidateEmbed(embed discordgo.MessageEmbed, msg *discordgo.Message) (bool, *[]error) {
+	// TODO: Write this
 	/* To Check:
 	 *   1) The characters in all title, description, field.name, field.value, footer.text, and author.name fields must
 	 *      not exceed 6000 characters in total

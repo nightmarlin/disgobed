@@ -34,13 +34,22 @@ import (
 )
 
 [...]
-  res := embeds.NewEmbed(). // Generate new Embed
+  res, errs := embeds.NewEmbed(). // Generate new Embed
     SetType(embeds.RichEmbedType). //
     SetTitle(`Test Embed`).
     SetDescription(`A very interesting text embed`).
     SetThumbnail(`https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/DOM-model.svg/1024px-DOM-model.svg.png`).
     Finalize()
 
-  session.ChannelMessageSendEmbed(channelid, res)
+  if errs == nil {
+    session.ChannelMessageSendEmbed(channelid, res)
+  }
 [...]
 ```
+
+## Interesting Information
+
+`Finalize()` is a really important function! The [Embed](./embed.go) struct caches all errors that
+may occur, due to validation failures or other reasons - this means that you have to actively check
+for errors. `Finalize()` makes this easy by returning the cached errors or nil as well as the final
+embed. You might find you still want to send an embed that is valid…
