@@ -3,15 +3,15 @@ package disgobed
 import (
 	"fmt"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
 /*
-Video wraps the discordgo.MessageEmbedVideo type and adds features. This wrapper ignores MessageEmbedVideo.ProxyURL as
+Video wraps the disgord.EmbedVideo type and adds features. This wrapper ignores MessageEmbedVideo.ProxyURL as
 the API would ignore that field if present
 */
 type Video struct {
-	*discordgo.MessageEmbedVideo
+	*disgord.EmbedVideo
 	Errors *[]error
 }
 
@@ -19,9 +19,9 @@ type Video struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an thumbnail is
 attached. Finalize will also purge the error cache!
 */
-func (v *Video) Finalize() (*discordgo.MessageEmbedVideo, *[]error) {
+func (v *Video) Finalize() (*disgord.EmbedVideo, *[]error) {
 	defer func(v *Video) { v.Errors = nil }(v)
-	return v.MessageEmbedVideo, v.Errors
+	return v.EmbedVideo, v.Errors
 }
 
 /*

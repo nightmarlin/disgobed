@@ -3,14 +3,14 @@ package disgobed
 import (
 	"fmt"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
 /*
-Thumbnail wraps the discordgo.MessageEmbedThumbnail type and adds features
+Thumbnail wraps the disgord.EmbedThumbnail type and adds features
 */
 type Thumbnail struct {
-	*discordgo.MessageEmbedThumbnail
+	*disgord.EmbedThumbnail
 	Errors *[]error
 }
 
@@ -18,9 +18,9 @@ type Thumbnail struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an thumbnail is
 attached. Finalize will also purge the error cache!
 */
-func (t *Thumbnail) Finalize() (*discordgo.MessageEmbedThumbnail, *[]error) {
+func (t *Thumbnail) Finalize() (*disgord.EmbedThumbnail, *[]error) {
 	defer func(t *Thumbnail) { t.Errors = nil }(t)
-	return t.MessageEmbedThumbnail, t.Errors
+	return t.EmbedThumbnail, t.Errors
 }
 
 /*
@@ -28,8 +28,8 @@ NewThumbnail creates and returns a pointer to a new empty thumbnail
 */
 func NewThumbnail() *Thumbnail {
 	return &Thumbnail{
-		MessageEmbedThumbnail: &discordgo.MessageEmbedThumbnail{},
-		Errors:                nil,
+		EmbedThumbnail: &disgord.EmbedThumbnail{},
+		Errors:         nil,
 	}
 }
 

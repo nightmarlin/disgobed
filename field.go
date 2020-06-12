@@ -3,14 +3,14 @@ package disgobed
 import (
 	"fmt"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
 /*
-Field wraps the discordgo.MessageEmbedField type and adds features
+Field wraps the disgord.EmbedField type and adds features
 */
 type Field struct {
-	*discordgo.MessageEmbedField
+	*disgord.EmbedField
 	Errors *[]error
 }
 
@@ -18,9 +18,9 @@ type Field struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before a field is
 added. Finalize will also purge the error cache!
 */
-func (f *Field) Finalize() (*discordgo.MessageEmbedField, *[]error) {
+func (f *Field) Finalize() (*disgord.EmbedField, *[]error) {
 	defer func(f *Field) { f.Errors = nil }(f)
-	return f.MessageEmbedField, f.Errors
+	return f.EmbedField, f.Errors
 }
 
 /*
@@ -28,8 +28,8 @@ NewField creates and returns a new empty field object
 */
 func NewField() *Field {
 	return &Field{
-		MessageEmbedField: &discordgo.MessageEmbedField{},
-		Errors:            nil,
+		EmbedField: &disgord.EmbedField{},
+		Errors:     nil,
 	}
 }
 

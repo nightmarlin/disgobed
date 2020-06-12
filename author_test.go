@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/andersfylling/disgord"
 	"github.com/bwmarrin/discordgo"
 	"github.com/maxatome/go-testdeep/td"
 )
@@ -23,7 +24,7 @@ func TestNewAuthor(tt *testing.T) {
 	t.Log(` - create author struct`)
 
 	want = Author{
-		MessageEmbedAuthor: &discordgo.MessageEmbedAuthor{
+		MessageEmbedAuthor: &disgord.EmbedAuthor{
 			URL:          "",
 			Name:         "",
 			IconURL:      "",

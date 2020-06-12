@@ -3,14 +3,14 @@ package disgobed
 import (
 	"fmt"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
 /*
-Footer wraps the discordgo.MessageEmbedFooter type and adds features
+Footer wraps the disgord.EmbedFooter type and adds features
 */
 type Footer struct {
-	*discordgo.MessageEmbedFooter
+	*disgord.EmbedFooter
 	Errors *[]error
 }
 
@@ -18,9 +18,9 @@ type Footer struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before a footer is
 attached. Finalize will also purge the error cache!
 */
-func (f *Footer) Finalize() (*discordgo.MessageEmbedFooter, *[]error) {
+func (f *Footer) Finalize() (*disgord.EmbedFooter, *[]error) {
 	defer func(f *Footer) { f.Errors = nil }(f)
-	return f.MessageEmbedFooter, f.Errors
+	return f.EmbedFooter, f.Errors
 }
 
 /*
@@ -28,8 +28,8 @@ NewFooter creates and returns a new empty footer
 */
 func NewFooter() *Footer {
 	return &Footer{
-		MessageEmbedFooter: &discordgo.MessageEmbedFooter{},
-		Errors:             nil,
+		EmbedFooter: &disgord.EmbedFooter{},
+		Errors:      nil,
 	}
 }
 

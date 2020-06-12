@@ -3,12 +3,12 @@ package disgobed
 import (
 	"fmt"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
-// Image wraps the discordgo.MessageEmbedImage type and adds features
+// Image wraps the disgord.EmbedImage type and adds features
 type Image struct {
-	*discordgo.MessageEmbedImage
+	*disgord.EmbedImage
 	Errors *[]error
 }
 
@@ -16,9 +16,9 @@ type Image struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an image is
 sent. Finalize will also purge the error cache!
 */
-func (i *Image) Finalize() (*discordgo.MessageEmbedImage, *[]error) {
+func (i *Image) Finalize() (*disgord.EmbedImage, *[]error) {
 	defer func(i *Image) { i.Errors = nil }(i)
-	return i.MessageEmbedImage, i.Errors
+	return i.EmbedImage, i.Errors
 }
 
 /*
@@ -26,8 +26,8 @@ NewImage creates and returns an empty image structure
 */
 func NewImage() *Image {
 	return &Image{
-		MessageEmbedImage: &discordgo.MessageEmbedImage{},
-		Errors:            nil,
+		EmbedImage: &disgord.EmbedImage{},
+		Errors:     nil,
 	}
 }
 

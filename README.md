@@ -1,11 +1,11 @@
-# Disgobed &mdash; A DiscordGo Embed Wrapper
+# Disgobed &mdash; A Disgord Embed Wrapper
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Nightmarlin/disgobed)](https://goreportcard.com/report/github.com/Nightmarlin/disgobed)
 
 ## About
 
-This module wraps the discordgo embed structure with a set of helper functions.
-This allows for the easy construction and sending of DiscordGo Embeds in a more idiomatic way.
+This module wraps the Disgord embed structure with a set of helper functions.
+This allows for the easy construction and sending of Disgord Embeds in a more idiomatic way.
 
 This library has been written to comply with the specification at the
 [API docs](https://discord.com/developers/docs/resources/channel#embed-object-embed-structure)
@@ -31,7 +31,7 @@ package mypackage
 
 import (
     `github.com/Nightmarlin/disgobed`
-    `github.com/bwmarrin/discordgo`
+    `github.com/andersfylling/disgord`
 )
 
 [...]
@@ -45,7 +45,9 @@ import (
     Finalize()
 
   if errs == nil {
-    session.ChannelMessageSendEmbed(channelid, res)
+    client.CreateMessage(context.Background(), channelID, &disgord.CreateMessageParams{
+      Embed: &res
+    }
   }
 [...]
 ```

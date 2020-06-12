@@ -3,14 +3,14 @@ package disgobed
 import (
 	"fmt"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
 /*
 Author wraps the discordgo.MessageEmbedAuthor type and adds features
 */
 type Author struct {
-	*discordgo.MessageEmbedAuthor
+	*disgord.EmbedAuthor
 	Errors *[]error
 }
 
@@ -18,9 +18,9 @@ type Author struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an author is
 sent. Finalize will also purge the error cache!
 */
-func (a *Author) Finalize() (*discordgo.MessageEmbedAuthor, *[]error) {
+func (a *Author) Finalize() (*disgord.EmbedAuthor, *[]error) {
 	defer func(a *Author) { a.Errors = nil }(a)
-	return a.MessageEmbedAuthor, a.Errors
+	return a.EmbedAuthor, a.Errors
 }
 
 /*
@@ -39,8 +39,8 @@ NewAuthor creates and returns a blank author struct
 */
 func NewAuthor() *Author {
 	res := &Author{
-		MessageEmbedAuthor: &discordgo.MessageEmbedAuthor{},
-		Errors:             nil,
+		EmbedAuthor: &disgord.EmbedAuthor{},
+		Errors:      nil,
 	}
 	return res
 }

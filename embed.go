@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 )
 
 /*
-Embed wraps the discordgo.MessageEmbed type and adds features. Never create it directly, instead use the NewEmbed function
+Embed wraps the disgord.Embed type and adds features. Never create it directly, instead use the NewEmbed function
 
 	embed := NewEmbed()
 
@@ -28,7 +28,7 @@ and call the methods to set the properties, allowing for chains that look like t
 for healthy embedment!
 */
 type Embed struct {
-	*discordgo.MessageEmbed
+	*disgord.Embed
 	Errors *[]error
 }
 
@@ -36,9 +36,9 @@ type Embed struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an embed is
 sent. Finalize will also purge the error cache!
 */
-func (e *Embed) Finalize() (*discordgo.MessageEmbed, *[]error) {
+func (e *Embed) Finalize() (*disgord.Embed, *[]error) {
 	defer func(e *Embed) { e.Errors = nil }(e)
-	return e.MessageEmbed, e.Errors
+	return e.Embed, e.Errors
 }
 
 /*
@@ -81,8 +81,8 @@ NewEmbed creates and returns an empty embed
 */
 func NewEmbed() *Embed {
 	res := &Embed{
-		MessageEmbed: &discordgo.MessageEmbed{},
-		Errors:       nil,
+		Embed:  &disgord.Embed{},
+		Errors: nil,
 	}
 	return res
 }
@@ -142,7 +142,7 @@ SetCurrentTimestamp sets the embed's timestamp to the current UTC time in the ap
 the pointer to the embed
 */
 func (e *Embed) SetCurrentTimestamp() *Embed {
-	utcTime := time.Now().UTC().Format(`2006-01-02T15:04:05.000Z`)
+	utcTime := disgord.Time{Time: time.Now().UTC()}
 	return e.setRawTimestamp(utcTime)
 }
 
@@ -152,7 +152,7 @@ The value stored is the corresponding UTC time in the appropriate discord format
 SetCustomTimestamp returns the pointer to the embed
 */
 func (e *Embed) SetCustomTimestamp(t time.Time) *Embed {
-	utcTime := t.UTC().Format(`2006-01-02T15:04:05.000Z`)
+	utcTime := disgord.Time{Time: t.UTC()}
 	return e.setRawTimestamp(utcTime)
 }
 
@@ -160,7 +160,7 @@ func (e *Embed) SetCustomTimestamp(t time.Time) *Embed {
 Sets the timestamp string to the argument and returns the pointer to the embed. Was exposed but the potential for error
 was too high, so has since been replaced with SetCustomTimestamp(t time.Time)
 */
-func (e *Embed) setRawTimestamp(timestamp string) *Embed {
+func (e *Embed) setRawTimestamp(timestamp disgord.Time) *Embed {
 	e.Timestamp = timestamp
 	return e
 }
@@ -200,12 +200,12 @@ func (e *Embed) AddFields(fields ...*Field) *Embed {
 }
 
 /*
-AddRawFields takes N discordgo.MessageEmbedField structures and adds them to the embed, then returns the pointer to the
+AddRawFields takes N disgord.EmbedField structures and adds them to the embed, then returns the pointer to the
 embed. The discord API limits embeds to having 25 Fields, so this function will add the first items from the list until
 that limit is reached
 (This function fails silently)
 */
-func (e *Embed) AddRawFields(fields ...*discordgo.MessageEmbedField) *Embed {
+func (e *Embed) AddRawFields(fields ...*disgord.EmbedField) *Embed {
 	for _, f := range fields {
 		e.AddRawField(f)
 	}
@@ -226,12 +226,12 @@ func (e *Embed) AddField(field *Field) *Embed {
 }
 
 /*
-AddRawField takes a discordgo.MessageEmbedField structure and adds it to the embed, then returns the pointer to the
+AddRawField takes a disgord.EmbedField structure and adds it to the embed, then returns the pointer to the
 embed. The discord API limits embeds to having 25 Fields, so this function will not add any fields if the limit has
 already been reached
 (This function fails silently)
 */
-func (e *Embed) AddRawField(field *discordgo.MessageEmbedField) *Embed {
+func (e *Embed) AddRawField(field *disgord.EmbedField) *Embed {
 	if len(e.Fields) < maxFieldCount {
 		e.Fields = append(e.Fields, field)
 	} else {
@@ -252,10 +252,10 @@ func (e *Embed) SetAuthor(author *Author) *Embed {
 }
 
 /*
-SetRawAuthor takes a discordgo.MessageEmbedAuthor and sets the embed's author field to it, then returns the pointer to
+SetRawAuthor takes a disgord.EmbedAuthor and sets the embed's author field to it, then returns the pointer to
 the embed
 */
-func (e *Embed) SetRawAuthor(author *discordgo.MessageEmbedAuthor) *Embed {
+func (e *Embed) SetRawAuthor(author *disgord.EmbedAuthor) *Embed {
 	e.Author = author
 	return e
 }
@@ -271,10 +271,10 @@ func (e *Embed) SetThumbnail(thumb *Thumbnail) *Embed {
 }
 
 /*
-SetRawThumbnail takes a discordgo.MessageEmbedThumbnail and sets the embed's thumbnail field to it, then returns the
+SetRawThumbnail takes a disgord.EmbedThumbnail and sets the embed's thumbnail field to it, then returns the
 pointer to the embed
 */
-func (e *Embed) SetRawThumbnail(thumb *discordgo.MessageEmbedThumbnail) *Embed {
+func (e *Embed) SetRawThumbnail(thumb *disgord.EmbedThumbnail) *Embed {
 	e.Thumbnail = thumb
 	return e
 }
@@ -292,11 +292,11 @@ func (e *Embed) SetProvider(provider *Provider) *Embed {
 }
 
 /*
-SetRawProvider allows you to set the discordgo.MessageEmbedProvider of an embed.
+SetRawProvider allows you to set the disgord.EmbedProvider of an embed.
 It will then return the pointer to the embed.
 See the provider.go docs for some extra information
 */
-func (e *Embed) SetRawProvider(provider *discordgo.MessageEmbedProvider) *Embed {
+func (e *Embed) SetRawProvider(provider *disgord.EmbedProvider) *Embed {
 	e.Provider = provider
 	return e
 }
@@ -313,10 +313,10 @@ func (e *Embed) SetFooter(footer *Footer) *Embed {
 }
 
 /*
-SetRawFooter takes a discordgo.MessageEmbedThumbnail and sets the embed's thumbnail field to it, then returns the
+SetRawFooter takes a disgord.EmbedThumbnail and sets the embed's thumbnail field to it, then returns the
 pointer to the embed
 */
-func (e *Embed) SetRawFooter(footer *discordgo.MessageEmbedFooter) *Embed {
+func (e *Embed) SetRawFooter(footer *disgord.EmbedFooter) *Embed {
 	e.Footer = footer
 	return e
 }
@@ -332,10 +332,10 @@ func (e *Embed) SetVideo(vid *Video) *Embed {
 }
 
 /*
-SetRawVideo takes a discordgo.MessageEmbedVideo and sets the embed's thumbnail field to it, then returns the pointer to
+SetRawVideo takes a disgord.EmbedVideo and sets the embed's thumbnail field to it, then returns the pointer to
 the embed
 */
-func (e *Embed) SetRawVideo(vid *discordgo.MessageEmbedVideo) *Embed {
+func (e *Embed) SetRawVideo(vid *disgord.EmbedVideo) *Embed {
 	e.Video = vid
 	return e
 }
@@ -352,10 +352,10 @@ func (e *Embed) SetImage(img *Image) *Embed {
 }
 
 /*
-SetRawImage takes a discordgo.MessageEmbedImage and sets the embed's image field to it, then returns the pointer to the
+SetRawImage takes a disgord.EmbedImage and sets the embed's image field to it, then returns the pointer to the
 embed
 */
-func (e *Embed) SetRawImage(img *discordgo.MessageEmbedImage) *Embed {
+func (e *Embed) SetRawImage(img *disgord.EmbedImage) *Embed {
 	e.Image = img
 	return e
 }
