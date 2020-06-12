@@ -38,10 +38,10 @@ ValidateEmbed returns whether or not discord is likely accept the embed attached
 accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
 urls
 */
-func (e *EmbedBuilder) Validate(msg *disgord.Message) (bool, *[]error) {
+func (e *EmbedBuilder) Validate(msg *disgord.Message) *[]error {
 	toCheck, errs := e.Finalize()
 	if errs != nil { // Make use of builtin err checking
-		return false, errs // Short-Circuit and dont run expensive checks if we already have errors
+		return errs // Short-Circuit and dont run expensive checks if we already have errors
 	}
 	return validation.ValidateEmbed(toCheck, msg)
 }
