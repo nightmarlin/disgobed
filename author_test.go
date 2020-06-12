@@ -1,37 +1,28 @@
 package disgobed
 
 import (
-	"reflect"
+	"fmt"
 	"testing"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/maxatome/go-testdeep/td"
 )
-
-/*
-Determines whether two author structures are equal by value
-*/
-func authorsEqual(a1, a2 Author) bool {
-	// Checks the message embed authors are the same
-	var underlyingAuthorsEqual = reflect.DeepEqual(*a1.MessageEmbedAuthor, *a2.MessageEmbedAuthor)
-
-	// Checks that errors is nil for both or not nil for both
-	var errorsBothNilOrNonNil = (a1.Errors == nil && a2.Errors == nil) || (a1.Errors != nil && a2.Errors != nil)
-
-	// If both aren't nil, checks that both slices are equal
-	var errorsSlicesEqual = true
-	if a1.Errors != nil && errorsBothNilOrNonNil {
-		errorsSlicesEqual = reflect.DeepEqual(*a1.Errors, *a2.Errors)
-	}
-
-	// If any failed, return false
-	return underlyingAuthorsEqual && errorsBothNilOrNonNil && errorsSlicesEqual
-}
 
 /*
 TestNewAuthor tests that the default author object is as it should be
 */
-func TestNewAuthor(t *testing.T) {
-	want := Author{
+func TestNewAuthor(tt *testing.T) {
+	t := td.NewT(tt)
+
+	var (
+		got  Author
+		want Author
+	)
+
+	t.Log(`1. test NewAuthor() returns appropriate value`)
+	t.Log(` - create author struct`)
+
+	want = Author{
 		MessageEmbedAuthor: &discordgo.MessageEmbedAuthor{
 			URL:          "",
 			Name:         "",
@@ -40,7 +31,63 @@ func TestNewAuthor(t *testing.T) {
 		},
 		Errors: nil,
 	}
-	if got := *NewAuthor(); !authorsEqual(want, got) {
-		t.Errorf(`1. GetDevState() = %v, wanted %v`, got, want)
+
+	t.Log(` - run test`)
+
+	got = *NewAuthor()
+	t.Cmp(got, want)
+
+	t.Log(`NewAuthor() test complete`)
+}
+
+func TestAuthor_Finalize(tt *testing.T) {
+	t := td.NewT(tt)
+
+	var (
+		gotAuthor  *discordgo.MessageEmbedAuthor
+		gotErrors  *[]error
+		wantAuthor *discordgo.MessageEmbedAuthor
+		wantErrors *[]error
+	)
+
+	t.Log(`1. test Finalize() on empty author struct`)
+	t.Log(` - create discordgo author struct and expected error struct`)
+	wantErrors = nil
+	wantAuthor = &discordgo.MessageEmbedAuthor{
+		URL:          "",
+		Name:         "",
+		IconURL:      "",
+		ProxyIconURL: "",
 	}
+
+	t.Log(` - run test`)
+
+	gotAuthor, gotErrors = NewAuthor().Finalize()
+	t.Cmp(gotErrors, wantErrors)
+	t.Cmp(gotAuthor, wantAuthor)
+
+	t.Log(`2. test Finalize() on author struct with url`)
+	t.Log(` - create url, expected author and expected errors`)
+	var testUrl = `https://github.com/Nightmarlin`
+	wantErrors = nil
+	wantAuthor = &discordgo.MessageEmbedAuthor{
+		URL:          testUrl,
+		Name:         "",
+		IconURL:      "",
+		ProxyIconURL: "",
+	}
+
+	t.Log(` - run test`)
+	gotAuthor, gotErrors = NewAuthor().SetURL(testUrl).Finalize()
+
+	t.Cmp(gotErrors, wantErrors)
+	t.Cmp(gotAuthor, wantAuthor)
+
+	t.Log(`3. test correct error generation on incorrect url type`)
+	t.Log(` - create url, expected author and expected errors`)
+	wantErrors = &[]error{
+		fmt.Errorf(``),
+	}
+
+	t.Log(`Author.Finalize() test complete`)
 }
