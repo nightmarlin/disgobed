@@ -54,28 +54,38 @@ func (f *Field) SetInline(isInline bool) *Field {
 
 /*
 SetName sets the name of the field then returns the pointer to the Field. The discord API limits Field names to 256
-characters, so this function will do nothing if len(name) > 256
+characters, so this function will do nothing if len(name) > 256. Field names must also not be empty, so this function
+will do nothing if name == ``
 (This function fails silently)
 */
 func (f *Field) SetName(name string) *Field {
-	if len(name) <= 256 {
-		f.Name = name
+	if len(name) <= lowerCharLimit {
+		if name == `` {
+			f.addError(valueIsEmptyErrString, `field name`)
+		} else {
+			f.Name = name
+		}
 	} else {
-		f.addError(`field name exceeds 256 characters: len(name) = %v | '%v'`, len(name), name)
+		f.addError(characterCountExceedsLimitErrTemplateString, `field name`, lowerCharLimit, len(name), name)
 	}
 	return f
 }
 
 /*
 SetValue sets the value of the field then returns the pointer to the Field. The discord API limits Field values to 1024
-characters, so this function will do nothing if len(name) > 1024
+characters, so this function will do nothing if len(name) > 1024. Field values must not be empty, so this function will
+do nothing if val == ``
 (This function fails silently)
 */
 func (f *Field) SetValue(val string) *Field {
-	if len(val) <= 1024 {
-		f.Value = val
+	if len(val) <= middleCharLimit {
+		if val == `` {
+			f.addError(valueIsEmptyErrString, `field value`)
+		} else {
+			f.Value = val
+		}
 	} else {
-		f.addError(`field value exceeds 1024 characters: len(val) = %v`, len(val))
+		f.addError(characterCountExceedsLimitLongErrTemplateString, `field value`, middleCharLimit, len(val))
 	}
 	return f
 }

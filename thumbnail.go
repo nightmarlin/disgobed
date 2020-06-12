@@ -54,7 +54,7 @@ func (t *Thumbnail) SetURL(url string) *Thumbnail {
 	if checkValidIconURL(url) {
 		t.URL = url
 	} else {
-		t.addError(`thumbnail url '%v' does not start with "http://" | "https://" | "attachment://"`, url)
+		t.addError(invalidUrlErrTemplateString, `thumbnail url`, url)
 	}
 	return t
 }
@@ -69,7 +69,7 @@ func (t *Thumbnail) SetProxyURL(proxyUrl string) *Thumbnail {
 	if checkValidIconURL(proxyUrl) {
 		t.URL = proxyUrl
 	} else {
-		t.addError(`thumbnail proxyUrl '%v' does not start with "http://" | "https://" | "attachment://"`, proxyUrl)
+		t.addError(invalidUrlErrTemplateString, `thumbnail proxyUrl`, proxyUrl)
 	}
 	return t
 }
@@ -84,7 +84,7 @@ func (t *Thumbnail) SetHW(h int, w int) *Thumbnail {
 		t.Height = h
 		t.Width = w
 	} else {
-		t.addError(`thumbnail height '%v' or thumbnail width '%v' is less than or equal to 0`, h, w)
+		t.addError(invalidHWErrTemplateString, `thumbnail`, h, `thumbnail`, w)
 	}
 	return t
 }
@@ -98,7 +98,7 @@ func (t *Thumbnail) SetHeight(h int) *Thumbnail {
 	if h > 0 {
 		t.Height = h
 	} else {
-		t.addError(`thumbnail height '%v' is less than or equal to 0`, h)
+		t.addError(valueNotBetweenErrTemplateString, `thumbnail height`, h, 0, `infinity`)
 	}
 	return t
 }
@@ -112,7 +112,7 @@ func (t *Thumbnail) SetWidth(w int) *Thumbnail {
 	if w > 0 {
 		t.Width = w
 	} else {
-		t.addError(`thumbnail width '%v' is less than or equal to 0`, w)
+		t.addError(valueNotBetweenErrTemplateString, `thumbnail width`, w, 0, `infinity`)
 	}
 	return t
 }

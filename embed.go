@@ -93,10 +93,10 @@ characters, so this function will do nothing if len(title) > 256
 (This function fails silently)
 */
 func (e *Embed) SetTitle(title string) *Embed {
-	if len(title) <= 256 {
+	if len(title) <= lowerCharLimit {
 		e.Title = title
 	} else {
-		e.addError(`embed title exceeds 256 characters: len(title) = %v | '%v'`, len(title), title)
+		e.addError(characterCountExceedsLimitErrTemplateString, `embed title`, lowerCharLimit, len(title), title)
 	}
 	return e
 }
@@ -107,10 +107,10 @@ descriptions to 2048 characters, so this function will do nothing if len(desc) >
 (This function fails silently)
 */
 func (e *Embed) SetDescription(desc string) *Embed {
-	if len(desc) <= 2048 {
+	if len(desc) <= upperCharLimit {
 		e.Description = desc
 	} else {
-		e.addError(`embed description exceeds 2048 characters: len(desc) = %v`, len(desc))
+		e.addError(characterCountExceedsLimitLongErrTemplateString, `embed description`, upperCharLimit, len(desc))
 	}
 	return e
 }
@@ -129,10 +129,10 @@ Color values must be between 0 and 16777215 otherwise the change will not be reg
 (This function fails silently)
 */
 func (e *Embed) SetColor(color int) *Embed {
-	if color >= 0 && color < 16777215 {
+	if color >= 0 && color < maxColorValue {
 		e.Color = color
 	} else {
-		e.addError(`color '%v' is not between 0 and 16777215`, color)
+		e.addError(valueNotBetweenErrTemplateString, `embed color`, color, 0, maxColorValue)
 	}
 	return e
 }
@@ -232,10 +232,10 @@ already been reached
 (This function fails silently)
 */
 func (e *Embed) AddRawField(field *discordgo.MessageEmbedField) *Embed {
-	if len(e.Fields) < 25 {
+	if len(e.Fields) < maxFieldCount {
 		e.Fields = append(e.Fields, field)
 	} else {
-		e.addError(`adding field '%v' would cause field count to exceed 25`, field.Name)
+		e.addError(fieldLimitReachedErrTemplateString, field.Name, maxFieldCount)
 	}
 	return e
 }
@@ -369,8 +369,7 @@ func (e *Embed) SetType(embedType string) *Embed {
 	if checkTypeValid(embedType) {
 		e.Type = embedType
 	} else {
-		e.addError(`embed type '%v' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"`,
-			embedType)
+		e.addError(invalidEmbedTypeErrTemplateString, embedType)
 	}
 	return e
 }

@@ -53,7 +53,7 @@ func (v *Video) SetHW(h int, w int) *Video {
 		v.Height = h
 		v.Width = w
 	} else {
-		v.addError(`video height '%v' or video width '%v' is less than or equal to 0`, h, w)
+		v.addError(invalidHWErrTemplateString, `video`, h, `video`, w)
 	}
 	return v
 }
@@ -67,7 +67,7 @@ func (v *Video) SetHeight(h int) *Video {
 	if h > 0 {
 		v.Height = h
 	} else {
-		v.addError(`video height '%v' is less than or equal to 0`, h)
+		v.addError(valueNotBetweenErrTemplateString, `video height`, h, 0, `infinity`)
 	}
 	return v
 }
@@ -81,7 +81,7 @@ func (v *Video) SetWidth(w int) *Video {
 	if w > 0 {
 		v.Width = w
 	} else {
-		v.addError(`video width '%v' is less than or equal to 0`, w)
+		v.addError(valueNotBetweenErrTemplateString, `video width`, w, 0, `infinity`)
 	}
 	return v
 }

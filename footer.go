@@ -53,7 +53,7 @@ func (f *Footer) SetIconURL(iconUrl string) *Footer {
 	if checkValidIconURL(iconUrl) {
 		f.IconURL = iconUrl
 	} else {
-		f.addError(`footer iconUrl '%v' does not start with "http://" | "https://" | "attachment://"`, iconUrl)
+		f.addError(invalidUrlErrTemplateString, `footer iconUrl`, iconUrl)
 	}
 	return f
 }
@@ -64,10 +64,10 @@ API limits Footer values to 2048 characters, so this function will do nothing if
 (This function fails silently)
 */
 func (f *Footer) SetText(val string) *Footer {
-	if len(val) <= 2048 {
+	if len(val) <= upperCharLimit {
 		f.Text = val
 	} else {
-		f.addError(`footer text exceeds 2048 characters: len(val) = %v`, len(val))
+		f.addError(characterCountExceedsLimitLongErrTemplateString, `footer text`, upperCharLimit, len(val))
 	}
 	return f
 }
@@ -82,8 +82,7 @@ func (f *Footer) SetProxyIconURL(proxyIconUrl string) *Footer {
 	if checkValidIconURL(proxyIconUrl) {
 		f.ProxyIconURL = proxyIconUrl
 	} else {
-		f.addError(`footer proxyIconUrl '%v' does not start with "http://" | "https://" | "attachment://"`,
-			proxyIconUrl)
+		f.addError(invalidUrlErrTemplateString, `footer proxyIconUrl`, proxyIconUrl)
 	}
 	return f
 }

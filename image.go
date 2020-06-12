@@ -51,7 +51,7 @@ func (i *Image) SetURL(url string) *Image {
 	if checkValidIconURL(url) {
 		i.URL = url
 	} else {
-		i.addError(invalidUrlErrString, `image url`, url)
+		i.addError(invalidUrlErrTemplateString, `image url`, url)
 	}
 	return i
 }
@@ -65,7 +65,7 @@ func (i *Image) SetProxyURL(proxyUrl string) *Image {
 	if checkValidIconURL(proxyUrl) {
 		i.ProxyURL = proxyUrl
 	} else {
-		i.addError(invalidUrlErrString, `image proxyUrl`, proxyUrl)
+		i.addError(invalidUrlErrTemplateString, `image proxyUrl`, proxyUrl)
 	}
 	return i
 }
@@ -80,7 +80,7 @@ func (i *Image) SetHW(h int, w int) *Image {
 		i.Height = h
 		i.Width = w
 	} else {
-		i.addError(invalidHWErrString, `image`, h, `image`, w)
+		i.addError(invalidHWErrTemplateString, `image`, h, `image`, w)
 	}
 	return i
 }
@@ -94,7 +94,7 @@ func (i *Image) SetHeight(h int) *Image {
 	if h > 0 {
 		i.Height = h
 	} else {
-		i.addError(lessThanOrEqualToZeroErrString, `image height`, h)
+		i.addError(valueNotBetweenErrTemplateString, `image height`, h, 0, `infinity`)
 	}
 	return i
 }
@@ -108,7 +108,7 @@ func (i *Image) SetWidth(w int) *Image {
 	if w > 0 {
 		i.Width = w
 	} else {
-		i.addError(`image width '%v' is less than or equal to 0`, w)
+		i.addError(valueNotBetweenErrTemplateString, `image width`, w, 0, `infinity`)
 	}
 	return i
 }

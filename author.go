@@ -62,8 +62,7 @@ func (a *Author) SetIconURL(iconUrl string) *Author {
 	if checkValidIconURL(iconUrl) {
 		a.IconURL = iconUrl
 	} else {
-		a.addError(`author iconUrl '%v' does not start with "http://" | "https://" | "attachment://"`,
-			iconUrl)
+		a.addError(invalidUrlErrTemplateString, `author iconUrl`, iconUrl)
 	}
 	return a
 }
@@ -74,10 +73,11 @@ API limits Author names to 256 characters, so this function will do nothing if l
 (This function fails silently)
 */
 func (a *Author) SetName(name string) *Author {
-	if len(name) <= 256 {
+	var limit = 256
+	if len(name) <= limit {
 		a.Name = name
 	} else {
-		a.addError(`author name exceeds 256 characters: len(name) = %v | '%v'`, len(name), name)
+		a.addError(characterCountExceedsLimitErrTemplateString, `author name`, limit, len(name), name)
 	}
 	return a
 }
@@ -92,8 +92,7 @@ func (a *Author) SetProxyIconURL(proxyIconUrl string) *Author {
 	if checkValidIconURL(proxyIconUrl) {
 		a.ProxyIconURL = proxyIconUrl
 	} else {
-		a.addError(`author proxyIconUrl '%v' does not start with "http://" | "https://" | "attachment://"`,
-			proxyIconUrl)
+		a.addError(invalidUrlErrTemplateString, `author proxyIconUrl`, proxyIconUrl)
 	}
 	return a
 }
