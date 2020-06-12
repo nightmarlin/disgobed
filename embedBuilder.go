@@ -200,13 +200,13 @@ func (e *EmbedBuilder) OutlineAllFields() *EmbedBuilder {
 }
 
 /*
-AddFields takes N Field structures and adds them to the embed, then returns the pointer to the embed.
-Note that Field structures are `Finalize`d once added and should not be changed after being added.
+AddFields takes N FieldBuilder structures and adds them to the embed, then returns the pointer to the embed.
+Note that FieldBuilder structures are `Finalize`d once added and should not be changed after being added.
 The discord API limits embeds to having 25 Fields, so this function will add the first items from the list until that
 limit is reached
 (This function fails silently)
 */
-func (e *EmbedBuilder) AddFields(fields ...*Field) *EmbedBuilder {
+func (e *EmbedBuilder) AddFields(fields ...*FieldBuilder) *EmbedBuilder {
 	for _, f := range fields {
 		e.AddField(f)
 	}
@@ -227,13 +227,13 @@ func (e *EmbedBuilder) AddRawFields(fields ...*disgord.EmbedField) *EmbedBuilder
 }
 
 /*
-AddField takes a Field structure and adds it to the embed, then returns the pointer to the embed.
-Note that the Field structure is `Finalize`d once added and should not be changed after being added.
+AddField takes a FieldBuilder structure and adds it to the embed, then returns the pointer to the embed.
+Note that the FieldBuilder structure is `Finalize`d once added and should not be changed after being added.
 The discord API limits embeds to having 25 Fields, so this function will not add any fields if the limit has already
 been reached. All errors are propagated to the main embed
 (This function fails silently)
 */
-func (e *EmbedBuilder) AddField(field *Field) *EmbedBuilder {
+func (e *EmbedBuilder) AddField(field *FieldBuilder) *EmbedBuilder {
 	res, errs := field.Finalize()
 	e.addAllRawErrors(errs)
 	return e.AddRawField(res)
@@ -255,11 +255,11 @@ func (e *EmbedBuilder) AddRawField(field *disgord.EmbedField) *EmbedBuilder {
 }
 
 /*
-SetAuthor takes an Author structure and sets the embed's author field to it, then returns the pointer to the embed.
-Note that the Author structure is `Finalize`d once added and should not be changed after being added. All errors are
+SetAuthor takes an AuthorBuilder structure and sets the embed's author field to it, then returns the pointer to the embed.
+Note that the AuthorBuilder structure is `Finalize`d once added and should not be changed after being added. All errors are
 propagated to the main embed
 */
-func (e *EmbedBuilder) SetAuthor(author *Author) *EmbedBuilder {
+func (e *EmbedBuilder) SetAuthor(author *AuthorBuilder) *EmbedBuilder {
 	res, errs := author.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawAuthor(res)
@@ -275,10 +275,10 @@ func (e *EmbedBuilder) SetRawAuthor(author *disgord.EmbedAuthor) *EmbedBuilder {
 }
 
 /*
-SetThumbnail takes a Thumbnail structure and sets the embed's thumbnail field to it, then returns the pointer to the
-embed. Note that the Thumbnail structure is `Finalize`d once added and should not be changed after being added
+SetThumbnail takes a ThumbnailBuilder structure and sets the embed's thumbnail field to it, then returns the pointer to the
+embed. Note that the ThumbnailBuilder structure is `Finalize`d once added and should not be changed after being added
 */
-func (e *EmbedBuilder) SetThumbnail(thumb *Thumbnail) *EmbedBuilder {
+func (e *EmbedBuilder) SetThumbnail(thumb *ThumbnailBuilder) *EmbedBuilder {
 	res, errs := thumb.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawThumbnail(res)
@@ -295,9 +295,9 @@ func (e *EmbedBuilder) SetRawThumbnail(thumb *disgord.EmbedThumbnail) *EmbedBuil
 
 /*
 SetProvider allows you to set the provider of an embed. It will then return the pointer to the embed.
-See the provider.go docs for some extra information
+See the providerBuilder.go docs for some extra information
 */
-func (e *EmbedBuilder) SetProvider(provider *Provider) *EmbedBuilder {
+func (e *EmbedBuilder) SetProvider(provider *ProviderBuilder) *EmbedBuilder {
 	res, errs := provider.Finalize()
 	if errs != nil { // This should never run
 		e.addAllRawErrors(errs)
@@ -308,7 +308,7 @@ func (e *EmbedBuilder) SetProvider(provider *Provider) *EmbedBuilder {
 /*
 SetRawProvider allows you to set the disgord.EmbedProvider of an embed.
 It will then return the pointer to the embed.
-See the provider.go docs for some extra information
+See the providerBuilder.go docs for some extra information
 */
 func (e *EmbedBuilder) SetRawProvider(provider *disgord.EmbedProvider) *EmbedBuilder {
 	e.Provider = provider
@@ -316,11 +316,11 @@ func (e *EmbedBuilder) SetRawProvider(provider *disgord.EmbedProvider) *EmbedBui
 }
 
 /*
-SetFooter sets the embed's footer property to the Footer passed to it, then returns the pointer to the embed.
-Note that the Footer structure is `Finalize`d once added and should not be changed after being added. Footer errors
+SetFooter sets the embed's footer property to the FooterBuilder passed to it, then returns the pointer to the embed.
+Note that the FooterBuilder structure is `Finalize`d once added and should not be changed after being added. FooterBuilder errors
 will be propagated into the embed struct
 */
-func (e *EmbedBuilder) SetFooter(footer *Footer) *EmbedBuilder {
+func (e *EmbedBuilder) SetFooter(footer *FooterBuilder) *EmbedBuilder {
 	res, errs := footer.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawFooter(res)
@@ -336,10 +336,10 @@ func (e *EmbedBuilder) SetRawFooter(footer *disgord.EmbedFooter) *EmbedBuilder {
 }
 
 /*
-SetVideo sets the embed's video property to the Video passed to it, then returns the pointer to the embed.
-Note that the Video structure is `Finalize`d once added and should not be changed after being added
+SetVideo sets the embed's video property to the VideoBuilder passed to it, then returns the pointer to the embed.
+Note that the VideoBuilder structure is `Finalize`d once added and should not be changed after being added
 */
-func (e *EmbedBuilder) SetVideo(vid *Video) *EmbedBuilder {
+func (e *EmbedBuilder) SetVideo(vid *VideoBuilder) *EmbedBuilder {
 	res, errs := vid.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawVideo(res)
@@ -355,11 +355,11 @@ func (e *EmbedBuilder) SetRawVideo(vid *disgord.EmbedVideo) *EmbedBuilder {
 }
 
 /*
-SetImage sets the embed's image property to the Image passed to it, then returns the pointer to the embed.
-Note that the Image structure is `Finalize`d once added and should not be changed after being added. Image errors
+SetImage sets the embed's image property to the ImageBuilder passed to it, then returns the pointer to the embed.
+Note that the ImageBuilder structure is `Finalize`d once added and should not be changed after being added. ImageBuilder errors
 will be propagated into the embed struct
 */
-func (e *EmbedBuilder) SetImage(img *Image) *EmbedBuilder {
+func (e *EmbedBuilder) SetImage(img *ImageBuilder) *EmbedBuilder {
 	res, errs := img.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawImage(res)

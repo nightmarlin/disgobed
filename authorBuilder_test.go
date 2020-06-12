@@ -15,14 +15,14 @@ func TestNewAuthor(tt *testing.T) {
 	t := td.NewT(tt)
 
 	var (
-		got  Author
-		want Author
+		got  AuthorBuilder
+		want AuthorBuilder
 	)
 
 	t.Log(`1. test NewAuthor() returns appropriate value`)
 	t.Log(` - create author struct`)
 
-	want = Author{
+	want = AuthorBuilder{
 		EmbedAuthor: &disgord.EmbedAuthor{
 			URL:          "",
 			Name:         "",
@@ -89,5 +89,5 @@ func TestAuthor_Finalize(tt *testing.T) {
 		fmt.Errorf(``),
 	}
 
-	t.Log(`Author.Finalize() test complete`)
+	t.Log(`AuthorBuilder.Finalize() test complete`)
 }

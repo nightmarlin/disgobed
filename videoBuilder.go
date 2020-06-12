@@ -7,10 +7,10 @@ import (
 )
 
 /*
-Video wraps the disgord.EmbedVideo type and adds features. This wrapper ignores MessageEmbedVideo.ProxyURL as
+VideoBuilder wraps the disgord.EmbedVideo type and adds features. This wrapper ignores MessageEmbedVideo.ProxyURL as
 the API would ignore that field if present
 */
-type Video struct {
+type VideoBuilder struct {
 	*disgord.EmbedVideo
 	Errors *[]error
 }
@@ -19,16 +19,16 @@ type Video struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an thumbnail is
 attached. Finalize will also purge the error cache!
 */
-func (v *Video) Finalize() (*disgord.EmbedVideo, *[]error) {
-	defer func(v *Video) { v.Errors = nil }(v)
+func (v *VideoBuilder) Finalize() (*disgord.EmbedVideo, *[]error) {
+	defer func(v *VideoBuilder) { v.Errors = nil }(v)
 	return v.EmbedVideo, v.Errors
 }
 
 /*
-addError takes a message string and adds it to the error slice stored in Author. If the pointer is nil a new error slice
+addError takes a message string and adds it to the error slice stored in AuthorBuilder. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */
-func (v *Video) addError(format string, values ...interface{}) {
+func (v *VideoBuilder) addError(format string, values ...interface{}) {
 	if v.Errors == nil {
 		v.Errors = &[]error{}
 	}
@@ -36,19 +36,19 @@ func (v *Video) addError(format string, values ...interface{}) {
 }
 
 /*
-SetURL sets the video source url to the value given to it then returns a pointer to the Video structure
+SetURL sets the video source url to the value given to it then returns a pointer to the VideoBuilder structure
 */
-func (v *Video) SetURL(url string) *Video {
+func (v *VideoBuilder) SetURL(url string) *VideoBuilder {
 	v.URL = url
 	return v
 }
 
 /*
-SetHW sets the video embed height and width to the values given then returns a pointer to the Video structure. If either
+SetHW sets the video embed height and width to the values given then returns a pointer to the VideoBuilder structure. If either
 h <= 0 or w <= 0, this operation does nothing
 (This function fails silently)
 */
-func (v *Video) SetHW(h int, w int) *Video {
+func (v *VideoBuilder) SetHW(h int, w int) *VideoBuilder {
 	if h > 0 && w > 0 {
 		v.Height = h
 		v.Width = w
@@ -59,11 +59,11 @@ func (v *Video) SetHW(h int, w int) *Video {
 }
 
 /*
-SetHeight sets the video embed height to the value given then returns a pointer to the Video structure. If h <= 0, this
+SetHeight sets the video embed height to the value given then returns a pointer to the VideoBuilder structure. If h <= 0, this
 operation does nothing
 (This function fails silently)
 */
-func (v *Video) SetHeight(h int) *Video {
+func (v *VideoBuilder) SetHeight(h int) *VideoBuilder {
 	if h > 0 {
 		v.Height = h
 	} else {
@@ -73,11 +73,11 @@ func (v *Video) SetHeight(h int) *Video {
 }
 
 /*
-SetWidth sets the video embed width to the value given then returns a pointer to the Video structure. If w <= 0, this
+SetWidth sets the video embed width to the value given then returns a pointer to the VideoBuilder structure. If w <= 0, this
 operation does nothing
 (This function fails silently)
 */
-func (v *Video) SetWidth(w int) *Video {
+func (v *VideoBuilder) SetWidth(w int) *VideoBuilder {
 	if w > 0 {
 		v.Width = w
 	} else {

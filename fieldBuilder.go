@@ -7,9 +7,9 @@ import (
 )
 
 /*
-Field wraps the disgord.EmbedField type and adds features
+FieldBuilder wraps the disgord.EmbedField type and adds features
 */
-type Field struct {
+type FieldBuilder struct {
 	*disgord.EmbedField
 	Errors *[]error
 }
@@ -18,26 +18,26 @@ type Field struct {
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before a field is
 added. Finalize will also purge the error cache!
 */
-func (f *Field) Finalize() (*disgord.EmbedField, *[]error) {
-	defer func(f *Field) { f.Errors = nil }(f)
+func (f *FieldBuilder) Finalize() (*disgord.EmbedField, *[]error) {
+	defer func(f *FieldBuilder) { f.Errors = nil }(f)
 	return f.EmbedField, f.Errors
 }
 
 /*
 NewField creates and returns a new empty field object
 */
-func NewField() *Field {
-	return &Field{
+func NewField() *FieldBuilder {
+	return &FieldBuilder{
 		EmbedField: &disgord.EmbedField{},
 		Errors:     nil,
 	}
 }
 
 /*
-addError takes a message string and adds it to the error slice stored in Field. If the pointer is nil a new error slice
+addError takes a message string and adds it to the error slice stored in FieldBuilder. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */
-func (f *Field) addError(format string, values ...interface{}) {
+func (f *FieldBuilder) addError(format string, values ...interface{}) {
 	if f.Errors == nil {
 		f.Errors = &[]error{}
 	}
@@ -45,20 +45,20 @@ func (f *Field) addError(format string, values ...interface{}) {
 }
 
 /*
-SetInline sets whether the field is inline or not then returns the pointer to the Field
+SetInline sets whether the field is inline or not then returns the pointer to the FieldBuilder
 */
-func (f *Field) SetInline(isInline bool) *Field {
+func (f *FieldBuilder) SetInline(isInline bool) *FieldBuilder {
 	f.Inline = isInline
 	return f
 }
 
 /*
-SetName sets the name of the field then returns the pointer to the Field. The discord API limits Field names to 256
-characters, so this function will do nothing if len(name) > 256. Field names must also not be empty, so this function
+SetName sets the name of the field then returns the pointer to the FieldBuilder. The discord API limits FieldBuilder names to 256
+characters, so this function will do nothing if len(name) > 256. FieldBuilder names must also not be empty, so this function
 will do nothing if name == ``
 (This function fails silently)
 */
-func (f *Field) SetName(name string) *Field {
+func (f *FieldBuilder) SetName(name string) *FieldBuilder {
 	if len(name) <= lowerCharLimit {
 		if name == `` {
 			f.addError(valueIsEmptyErrString, `field name`)
@@ -72,12 +72,12 @@ func (f *Field) SetName(name string) *Field {
 }
 
 /*
-SetValue sets the value of the field then returns the pointer to the Field. The discord API limits Field values to 1024
-characters, so this function will do nothing if len(name) > 1024. Field values must not be empty, so this function will
+SetValue sets the value of the field then returns the pointer to the FieldBuilder. The discord API limits FieldBuilder values to 1024
+characters, so this function will do nothing if len(name) > 1024. FieldBuilder values must not be empty, so this function will
 do nothing if val == ``
 (This function fails silently)
 */
-func (f *Field) SetValue(val string) *Field {
+func (f *FieldBuilder) SetValue(val string) *FieldBuilder {
 	if len(val) <= middleCharLimit {
 		if val == `` {
 			f.addError(valueIsEmptyErrString, `field value`)
