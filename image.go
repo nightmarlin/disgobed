@@ -51,7 +51,7 @@ func (i *Image) SetURL(url string) *Image {
 	if checkValidIconURL(url) {
 		i.URL = url
 	} else {
-		i.addError(`image url '%v' does not start with "http://" | "https://" | "attachment://"`, url)
+		i.addError(invalidUrlErrString, `image url`, url)
 	}
 	return i
 }
@@ -65,7 +65,7 @@ func (i *Image) SetProxyURL(proxyUrl string) *Image {
 	if checkValidIconURL(proxyUrl) {
 		i.ProxyURL = proxyUrl
 	} else {
-		i.addError(`image proxyUrl '%v' does not start with "http://" | "https://" | "attachment://"`, proxyUrl)
+		i.addError(invalidUrlErrString, `image proxyUrl`, proxyUrl)
 	}
 	return i
 }
@@ -80,7 +80,7 @@ func (i *Image) SetHW(h int, w int) *Image {
 		i.Height = h
 		i.Width = w
 	} else {
-		i.addError(`image height '%v' or video width '%v' is less than or equal to 0`, h, w)
+		i.addError(invalidHWErrString, `image`, h, `image`, w)
 	}
 	return i
 }
@@ -94,7 +94,7 @@ func (i *Image) SetHeight(h int) *Image {
 	if h > 0 {
 		i.Height = h
 	} else {
-		i.addError(`image height '%v' is less than or equal to 0`, h)
+		i.addError(lessThanOrEqualToZeroErrString, `image height`, h)
 	}
 	return i
 }

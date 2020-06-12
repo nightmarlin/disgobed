@@ -11,6 +11,17 @@ func checkValidIconURL(url string) bool {
 }
 
 const (
+	// [Type Property] '[Value]' does not start with "http://" | "https://" | "attachment://"
+	invalidUrlErrString = `%v '%v' does not start with "http://" | "https://" | "attachment://"`
+
+	// [Type Property] '[Value]' is less than or equal to 0
+	lessThanOrEqualToZeroErrString = `%v '%v' is less than or equal to 0`
+
+	// [Type] height '[Value]' or [Type] width '[Value]' is less than or equal to 0
+	invalidHWErrString = `%v height '%v' or %v width '%v' is less than or equal to 0`
+)
+
+const (
 	// RichEmbedType describes a rich embed - generally ignored by clients
 	RichEmbedType = `rich`
 
