@@ -1,21 +1,8 @@
-package disgobed
+package validation
 
 import (
 	"github.com/andersfylling/disgord"
 )
-
-/*
-ValidateEmbed returns whether or not discord is likely accept the embed attached to it. If discord is unlikely to
-accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
-urls
-*/
-func (e *Embed) ValidateEmbed(msg *disgord.Message) (bool, *[]error) {
-	toCheck, errs := e.Finalize()
-	if errs != nil { // Make use of builtin err checking
-		return false, errs // Short-Circuit and dont run expensive checks if we already have errors
-	}
-	return ValidateEmbed(toCheck, msg)
-}
 
 /*
 ValidateEmbed returns whether or not discord is likely accept the embed attached to it. If discord is unlikely to
@@ -36,7 +23,7 @@ func ValidateEmbed(embed *disgord.Embed, msg *disgord.Message) (bool, *[]error) 
 	 *      | embed description
 	 *      | footer text
 	 *   5) An embed can have a maximum of 25 attached fields
-	 *   6) Embed types are limited to one of "rich" | "image" | "video" | "gifv" | "link" | "article"
+	 *   6) EmbedBuilder types are limited to one of "rich" | "image" | "video" | "gifv" | "link" | "article"
 	 *   7) The following fields must not be empty when present
 	 *      | footer text
 	 *      | field name

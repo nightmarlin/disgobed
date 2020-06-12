@@ -9,11 +9,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
 /*
-Embed wraps the disgord.Embed type and adds features. Never create it directly, instead use the NewEmbed function
+EmbedBuilder wraps the disgord.EmbedBuilder type and adds features. Never create it directly, instead use the NewEmbed function
 
 	embed := NewEmbed()
 
@@ -27,25 +28,38 @@ and call the methods to set the properties, allowing for chains that look like t
 
 for healthy embedment!
 */
-type Embed struct {
+type EmbedBuilder struct {
 	*disgord.Embed
 	Errors *[]error
+}
+
+/*
+ValidateEmbed returns whether or not discord is likely accept the embed attached to it. If discord is unlikely to
+accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
+urls
+*/
+func (e *EmbedBuilder) Validate(msg *disgord.Message) (bool, *[]error) {
+	toCheck, errs := e.Finalize()
+	if errs != nil { // Make use of builtin err checking
+		return false, errs // Short-Circuit and dont run expensive checks if we already have errors
+	}
+	return validation.ValidateEmbed(toCheck, msg)
 }
 
 /*
 Finalize strips away the extra functions and returns the wrapped type. It should always be called before an embed is
 sent. Finalize will also purge the error cache!
 */
-func (e *Embed) Finalize() (*disgord.Embed, *[]error) {
-	defer func(e *Embed) { e.Errors = nil }(e)
+func (e *EmbedBuilder) Finalize() (*disgord.Embed, *[]error) {
+	defer func(e *EmbedBuilder) { e.Errors = nil }(e)
 	return e.Embed, e.Errors
 }
 
 /*
-addError takes a message string and adds it to the error slice stored in Embed. If the pointer is nil a new error slice
+addError takes a message string and adds it to the error slice stored in EmbedBuilder. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */
-func (e *Embed) addError(format string, values ...interface{}) {
+func (e *EmbedBuilder) addError(format string, values ...interface{}) {
 	if e.Errors == nil {
 		e.Errors = &[]error{}
 	}
@@ -56,7 +70,7 @@ func (e *Embed) addError(format string, values ...interface{}) {
 addRawError takes a pre-existing error and adds it to the stored slice. If the pointer is nil a new error slice is
 created.
 */
-func (e *Embed) addRawError(err error) {
+func (e *EmbedBuilder) addRawError(err error) {
 	if e.Errors == nil {
 		e.Errors = &[]error{}
 	}
@@ -67,7 +81,7 @@ func (e *Embed) addRawError(err error) {
 addAllRawErrors takes a pre-existing error slice and adds it to the stored slice. If the pointer is nil a new error
 slice is created.
 */
-func (e *Embed) addAllRawErrors(errs *[]error) {
+func (e *EmbedBuilder) addAllRawErrors(errs *[]error) {
 	if errs == nil {
 		return
 	}
@@ -79,8 +93,8 @@ func (e *Embed) addAllRawErrors(errs *[]error) {
 /*
 NewEmbed creates and returns an empty embed
 */
-func NewEmbed() *Embed {
-	res := &Embed{
+func NewEmbed() *EmbedBuilder {
+	res := &EmbedBuilder{
 		Embed:  &disgord.Embed{},
 		Errors: nil,
 	}
@@ -92,7 +106,7 @@ SetTitle edits the embed's title and returns the pointer to the embed. The disco
 characters, so this function will do nothing if len(title) > 256
 (This function fails silently)
 */
-func (e *Embed) SetTitle(title string) *Embed {
+func (e *EmbedBuilder) SetTitle(title string) *EmbedBuilder {
 	if len(title) <= lowerCharLimit {
 		e.Title = title
 	} else {
@@ -106,7 +120,7 @@ SetDescription edits the embed's description and returns the pointer to the embe
 descriptions to 2048 characters, so this function will do nothing if len(desc) > 2048
 (This function fails silently)
 */
-func (e *Embed) SetDescription(desc string) *Embed {
+func (e *EmbedBuilder) SetDescription(desc string) *EmbedBuilder {
 	if len(desc) <= upperCharLimit {
 		e.Description = desc
 	} else {
@@ -118,7 +132,7 @@ func (e *Embed) SetDescription(desc string) *Embed {
 /*
 SetURL edits the embed's main URL and returns the pointer to the embed
 */
-func (e *Embed) SetURL(url string) *Embed {
+func (e *EmbedBuilder) SetURL(url string) *EmbedBuilder {
 	e.URL = url
 	return e
 }
@@ -128,7 +142,7 @@ SetColor edits the embed's highlight colour and returns the pointer to the embed
 Color values must be between 0 and 16777215 otherwise the change will not be registered
 (This function fails silently)
 */
-func (e *Embed) SetColor(color int) *Embed {
+func (e *EmbedBuilder) SetColor(color int) *EmbedBuilder {
 	if color >= 0 && color < maxColorValue {
 		e.Color = color
 	} else {
@@ -141,7 +155,7 @@ func (e *Embed) SetColor(color int) *Embed {
 SetCurrentTimestamp sets the embed's timestamp to the current UTC time in the appropriate discord format and returns
 the pointer to the embed
 */
-func (e *Embed) SetCurrentTimestamp() *Embed {
+func (e *EmbedBuilder) SetCurrentTimestamp() *EmbedBuilder {
 	utcTime := disgord.Time{Time: time.Now().UTC()}
 	return e.setRawTimestamp(utcTime)
 }
@@ -151,7 +165,7 @@ SetCustomTimestamp sets the embed's timestamp to that specified by the time.Time
 The value stored is the corresponding UTC time in the appropriate discord format.
 SetCustomTimestamp returns the pointer to the embed
 */
-func (e *Embed) SetCustomTimestamp(t time.Time) *Embed {
+func (e *EmbedBuilder) SetCustomTimestamp(t time.Time) *EmbedBuilder {
 	utcTime := disgord.Time{Time: t.UTC()}
 	return e.setRawTimestamp(utcTime)
 }
@@ -160,7 +174,7 @@ func (e *Embed) SetCustomTimestamp(t time.Time) *Embed {
 Sets the timestamp string to the argument and returns the pointer to the embed. Was exposed but the potential for error
 was too high, so has since been replaced with SetCustomTimestamp(t time.Time)
 */
-func (e *Embed) setRawTimestamp(timestamp disgord.Time) *Embed {
+func (e *EmbedBuilder) setRawTimestamp(timestamp disgord.Time) *EmbedBuilder {
 	e.Timestamp = timestamp
 	return e
 }
@@ -168,7 +182,7 @@ func (e *Embed) setRawTimestamp(timestamp disgord.Time) *Embed {
 /*
 InlineAllFields sets the Inline property on all currently attached fields to true and returns the pointer to the embed
 */
-func (e *Embed) InlineAllFields() *Embed {
+func (e *EmbedBuilder) InlineAllFields() *EmbedBuilder {
 	for _, f := range e.Fields {
 		f.Inline = true
 	}
@@ -178,7 +192,7 @@ func (e *Embed) InlineAllFields() *Embed {
 /*
 OutlineAllFields sets the Inline property on all currently attached fields to false and returns the pointer to the embed
 */
-func (e *Embed) OutlineAllFields() *Embed {
+func (e *EmbedBuilder) OutlineAllFields() *EmbedBuilder {
 	for _, f := range e.Fields {
 		f.Inline = false
 	}
@@ -192,7 +206,7 @@ The discord API limits embeds to having 25 Fields, so this function will add the
 limit is reached
 (This function fails silently)
 */
-func (e *Embed) AddFields(fields ...*Field) *Embed {
+func (e *EmbedBuilder) AddFields(fields ...*Field) *EmbedBuilder {
 	for _, f := range fields {
 		e.AddField(f)
 	}
@@ -205,7 +219,7 @@ embed. The discord API limits embeds to having 25 Fields, so this function will 
 that limit is reached
 (This function fails silently)
 */
-func (e *Embed) AddRawFields(fields ...*disgord.EmbedField) *Embed {
+func (e *EmbedBuilder) AddRawFields(fields ...*disgord.EmbedField) *EmbedBuilder {
 	for _, f := range fields {
 		e.AddRawField(f)
 	}
@@ -219,7 +233,7 @@ The discord API limits embeds to having 25 Fields, so this function will not add
 been reached. All errors are propagated to the main embed
 (This function fails silently)
 */
-func (e *Embed) AddField(field *Field) *Embed {
+func (e *EmbedBuilder) AddField(field *Field) *EmbedBuilder {
 	res, errs := field.Finalize()
 	e.addAllRawErrors(errs)
 	return e.AddRawField(res)
@@ -231,7 +245,7 @@ embed. The discord API limits embeds to having 25 Fields, so this function will 
 already been reached
 (This function fails silently)
 */
-func (e *Embed) AddRawField(field *disgord.EmbedField) *Embed {
+func (e *EmbedBuilder) AddRawField(field *disgord.EmbedField) *EmbedBuilder {
 	if len(e.Fields) < maxFieldCount {
 		e.Fields = append(e.Fields, field)
 	} else {
@@ -245,7 +259,7 @@ SetAuthor takes an Author structure and sets the embed's author field to it, the
 Note that the Author structure is `Finalize`d once added and should not be changed after being added. All errors are
 propagated to the main embed
 */
-func (e *Embed) SetAuthor(author *Author) *Embed {
+func (e *EmbedBuilder) SetAuthor(author *Author) *EmbedBuilder {
 	res, errs := author.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawAuthor(res)
@@ -255,7 +269,7 @@ func (e *Embed) SetAuthor(author *Author) *Embed {
 SetRawAuthor takes a disgord.EmbedAuthor and sets the embed's author field to it, then returns the pointer to
 the embed
 */
-func (e *Embed) SetRawAuthor(author *disgord.EmbedAuthor) *Embed {
+func (e *EmbedBuilder) SetRawAuthor(author *disgord.EmbedAuthor) *EmbedBuilder {
 	e.Author = author
 	return e
 }
@@ -264,7 +278,7 @@ func (e *Embed) SetRawAuthor(author *disgord.EmbedAuthor) *Embed {
 SetThumbnail takes a Thumbnail structure and sets the embed's thumbnail field to it, then returns the pointer to the
 embed. Note that the Thumbnail structure is `Finalize`d once added and should not be changed after being added
 */
-func (e *Embed) SetThumbnail(thumb *Thumbnail) *Embed {
+func (e *EmbedBuilder) SetThumbnail(thumb *Thumbnail) *EmbedBuilder {
 	res, errs := thumb.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawThumbnail(res)
@@ -274,7 +288,7 @@ func (e *Embed) SetThumbnail(thumb *Thumbnail) *Embed {
 SetRawThumbnail takes a disgord.EmbedThumbnail and sets the embed's thumbnail field to it, then returns the
 pointer to the embed
 */
-func (e *Embed) SetRawThumbnail(thumb *disgord.EmbedThumbnail) *Embed {
+func (e *EmbedBuilder) SetRawThumbnail(thumb *disgord.EmbedThumbnail) *EmbedBuilder {
 	e.Thumbnail = thumb
 	return e
 }
@@ -283,7 +297,7 @@ func (e *Embed) SetRawThumbnail(thumb *disgord.EmbedThumbnail) *Embed {
 SetProvider allows you to set the provider of an embed. It will then return the pointer to the embed.
 See the provider.go docs for some extra information
 */
-func (e *Embed) SetProvider(provider *Provider) *Embed {
+func (e *EmbedBuilder) SetProvider(provider *Provider) *EmbedBuilder {
 	res, errs := provider.Finalize()
 	if errs != nil { // This should never run
 		e.addAllRawErrors(errs)
@@ -296,7 +310,7 @@ SetRawProvider allows you to set the disgord.EmbedProvider of an embed.
 It will then return the pointer to the embed.
 See the provider.go docs for some extra information
 */
-func (e *Embed) SetRawProvider(provider *disgord.EmbedProvider) *Embed {
+func (e *EmbedBuilder) SetRawProvider(provider *disgord.EmbedProvider) *EmbedBuilder {
 	e.Provider = provider
 	return e
 }
@@ -306,7 +320,7 @@ SetFooter sets the embed's footer property to the Footer passed to it, then retu
 Note that the Footer structure is `Finalize`d once added and should not be changed after being added. Footer errors
 will be propagated into the embed struct
 */
-func (e *Embed) SetFooter(footer *Footer) *Embed {
+func (e *EmbedBuilder) SetFooter(footer *Footer) *EmbedBuilder {
 	res, errs := footer.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawFooter(res)
@@ -316,7 +330,7 @@ func (e *Embed) SetFooter(footer *Footer) *Embed {
 SetRawFooter takes a disgord.EmbedThumbnail and sets the embed's thumbnail field to it, then returns the
 pointer to the embed
 */
-func (e *Embed) SetRawFooter(footer *disgord.EmbedFooter) *Embed {
+func (e *EmbedBuilder) SetRawFooter(footer *disgord.EmbedFooter) *EmbedBuilder {
 	e.Footer = footer
 	return e
 }
@@ -325,7 +339,7 @@ func (e *Embed) SetRawFooter(footer *disgord.EmbedFooter) *Embed {
 SetVideo sets the embed's video property to the Video passed to it, then returns the pointer to the embed.
 Note that the Video structure is `Finalize`d once added and should not be changed after being added
 */
-func (e *Embed) SetVideo(vid *Video) *Embed {
+func (e *EmbedBuilder) SetVideo(vid *Video) *EmbedBuilder {
 	res, errs := vid.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawVideo(res)
@@ -335,7 +349,7 @@ func (e *Embed) SetVideo(vid *Video) *Embed {
 SetRawVideo takes a disgord.EmbedVideo and sets the embed's thumbnail field to it, then returns the pointer to
 the embed
 */
-func (e *Embed) SetRawVideo(vid *disgord.EmbedVideo) *Embed {
+func (e *EmbedBuilder) SetRawVideo(vid *disgord.EmbedVideo) *EmbedBuilder {
 	e.Video = vid
 	return e
 }
@@ -345,7 +359,7 @@ SetImage sets the embed's image property to the Image passed to it, then returns
 Note that the Image structure is `Finalize`d once added and should not be changed after being added. Image errors
 will be propagated into the embed struct
 */
-func (e *Embed) SetImage(img *Image) *Embed {
+func (e *EmbedBuilder) SetImage(img *Image) *EmbedBuilder {
 	res, errs := img.Finalize()
 	e.addAllRawErrors(errs)
 	return e.SetRawImage(res)
@@ -355,7 +369,7 @@ func (e *Embed) SetImage(img *Image) *Embed {
 SetRawImage takes a disgord.EmbedImage and sets the embed's image field to it, then returns the pointer to the
 embed
 */
-func (e *Embed) SetRawImage(img *disgord.EmbedImage) *Embed {
+func (e *EmbedBuilder) SetRawImage(img *disgord.EmbedImage) *EmbedBuilder {
 	e.Image = img
 	return e
 }
@@ -365,7 +379,7 @@ SetType checks if the embed type passed to it is valid. If it is, it sets the em
 nothing. It then returns the pointer to the embed
 (This function fails silently)
 */
-func (e *Embed) SetType(embedType string) *Embed {
+func (e *EmbedBuilder) SetType(embedType string) *EmbedBuilder {
 	if checkTypeValid(embedType) {
 		e.Type = embedType
 	} else {

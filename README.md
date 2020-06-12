@@ -8,7 +8,9 @@ This module wraps the Disgord embed structure with a set of helper functions.
 This allows for the easy construction and sending of Disgord Embeds in a more idiomatic way.
 
 This library has been written to comply with the specification at the
-[API docs](https://discord.com/developers/docs/resources/channel#embed-object-embed-structure)
+[API docs](https://discord.com/developers/docs/resources/channel#embed-object-embed-structure).
+&amp; by that I mean: I spent way too long looking at how exactly Discord likes their embeds,
+then worked out a set of ways to validate that!
 
 ## How to use
 

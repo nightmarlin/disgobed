@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/andersfylling/disgord"
-	"github.com/bwmarrin/discordgo"
 	"github.com/maxatome/go-testdeep/td"
 )
 
@@ -24,7 +23,7 @@ func TestNewAuthor(tt *testing.T) {
 	t.Log(` - create author struct`)
 
 	want = Author{
-		MessageEmbedAuthor: &disgord.EmbedAuthor{
+		EmbedAuthor: &disgord.EmbedAuthor{
 			URL:          "",
 			Name:         "",
 			IconURL:      "",
@@ -45,16 +44,16 @@ func TestAuthor_Finalize(tt *testing.T) {
 	t := td.NewT(tt)
 
 	var (
-		gotAuthor  *discordgo.MessageEmbedAuthor
+		gotAuthor  *disgord.EmbedAuthor
 		gotErrors  *[]error
-		wantAuthor *discordgo.MessageEmbedAuthor
+		wantAuthor *disgord.EmbedAuthor
 		wantErrors *[]error
 	)
 
 	t.Log(`1. test Finalize() on empty author struct`)
 	t.Log(` - create discordgo author struct and expected error struct`)
 	wantErrors = nil
-	wantAuthor = &discordgo.MessageEmbedAuthor{
+	wantAuthor = &disgord.EmbedAuthor{
 		URL:          "",
 		Name:         "",
 		IconURL:      "",
@@ -71,7 +70,7 @@ func TestAuthor_Finalize(tt *testing.T) {
 	t.Log(` - create url, expected author and expected errors`)
 	var testUrl = `https://github.com/Nightmarlin`
 	wantErrors = nil
-	wantAuthor = &discordgo.MessageEmbedAuthor{
+	wantAuthor = &disgord.EmbedAuthor{
 		URL:          testUrl,
 		Name:         "",
 		IconURL:      "",

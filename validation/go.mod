@@ -1,4 +1,4 @@
-module github.com/Nightmarlin/disgobed
+module github.com/Nightmarlin/disgobed/validation
 
 go 1.14
 
