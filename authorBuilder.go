@@ -25,14 +25,6 @@ func (a *AuthorBuilder) Finalize() (*disgord.EmbedAuthor, *[]error) {
 }
 
 /*
-Generate strips aways the extra functions and returns the wrapped type without the cached validation errors. Allows for
-immediate addition to a message
-*/
-func (a *AuthorBuilder) Generate() *disgord.EmbedAuthor {
-	return a.EmbedAuthor
-}
-
-/*
 addError takes a message string and adds it to the error slice stored in AuthorBuilder. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */

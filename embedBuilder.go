@@ -56,6 +56,14 @@ func (e *EmbedBuilder) Finalize() (*disgord.Embed, *[]error) {
 }
 
 /*
+Generate strips aways the extra functions and returns the wrapped type without the cached validation errors. Allows for
+immediate addition to a message. This method does not purge the error cache
+*/
+func (e *EmbedBuilder) Generate() *disgord.Embed {
+	return e.Embed
+}
+
+/*
 addError takes a message string and adds it to the error slice stored in EmbedBuilder. If the pointer is nil a new error slice
 is created. This function takes the same inputs as fmt.Sprintf
 */
