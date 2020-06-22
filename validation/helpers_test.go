@@ -20,6 +20,7 @@ func TestCheckValidIconUrl(tt *testing.T) {
 		`https://cdn.discordapp.com/chan/msg/name.jpg`: true,
 		`localhost:8080//img1.png`:                     false,
 		`http://unsecure.server.me/song1.mp3`:          true,
+		``:                                             false,
 	}
 
 	for input, want := range urls {
