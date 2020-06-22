@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 	"github.com/maxatome/go-testdeep/td"
 )
@@ -66,28 +67,41 @@ func TestAuthor_Finalize(tt *testing.T) {
 	t.Cmp(gotErrors, wantErrors)
 	t.Cmp(gotAuthor, wantAuthor)
 
-	t.Log(`2. test Finalize() on author struct with url`)
-	t.Log(` - create url, expected author and expected errors`)
+	t.Log(`2. test Finalize() on author struct with iconUrl`)
+	t.Log(` - create iconUrl, expected author and expected errors`)
 	var testUrl = `https://github.com/Nightmarlin`
 	wantErrors = nil
 	wantAuthor = &disgord.EmbedAuthor{
-		URL:          testUrl,
+		URL:          "",
+		Name:         "",
+		IconURL:      testUrl,
+		ProxyIconURL: "",
+	}
+
+	t.Log(` - run test`)
+	gotAuthor, gotErrors = NewAuthor().SetIconURL(testUrl).Finalize()
+
+	t.Cmp(gotErrors, wantErrors)
+	t.Cmp(gotAuthor, wantAuthor)
+
+	t.Log(`3. test correct error generation on incorrect iconUrl type`)
+	t.Log(` - create iconUrl, expected author and expected errors`)
+	testUrl = `aka.ms/ps7`
+	wantErrors = &[]error{
+		fmt.Errorf(validation.InvalidUrlErrTemplateString, "author iconUrl", testUrl),
+	}
+	wantAuthor = &disgord.EmbedAuthor{
+		URL:          "",
 		Name:         "",
 		IconURL:      "",
 		ProxyIconURL: "",
 	}
 
 	t.Log(` - run test`)
-	gotAuthor, gotErrors = NewAuthor().SetURL(testUrl).Finalize()
+	gotAuthor, gotErrors = NewAuthor().SetIconURL(testUrl).Finalize()
 
 	t.Cmp(gotErrors, wantErrors)
 	t.Cmp(gotAuthor, wantAuthor)
-
-	t.Log(`3. test correct error generation on incorrect url type`)
-	t.Log(` - create url, expected author and expected errors`)
-	wantErrors = &[]error{
-		fmt.Errorf(``),
-	}
 
 	t.Log(`AuthorBuilder.Finalize() test complete`)
 }

@@ -50,10 +50,10 @@ const (
 	InvalidEmbedTypeErrTemplateString = `embed type '%v' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"`
 
 	// [Type Property] [Value] is not between [LowerLimit] and [UpperLimit]
-	ValueNotBetweenErrTemplateString = `%v '%v' is not between $v and %v`
+	ValueNotBetweenErrTemplateString = `%v '%v' is not between %v and %v`
 
 	// [Type Property] should not be empty if set
-	ValueIsEmptyErrString = `$v should not be empty if set`
+	ValueIsEmptyErrString = `%v should not be empty if set`
 )
 
 const (
