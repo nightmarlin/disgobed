@@ -29,4 +29,6 @@ func TestNewEmbed(tt *testing.T) {
 	gotEmbed, gotErrors = NewEmbed().Finalize()
 	t.Cmp(gotEmbed, wantEmbed)
 	t.Cmp(gotErrors, wantErrors)
+
+	t.Log(`EmbedBuilder.Finalize() test complete`)
 }
