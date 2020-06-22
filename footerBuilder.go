@@ -80,7 +80,7 @@ structure
 (This function fails silently)
 */
 func (f *FooterBuilder) SetProxyIconURL(proxyIconUrl string) *FooterBuilder {
-	if validation.checkValidIconURL(proxyIconUrl) {
+	if validation.CheckValidIconURL(proxyIconUrl) {
 		f.ProxyIconURL = proxyIconUrl
 	} else {
 		f.addError(validation.InvalidUrlErrTemplateString, `footer proxyIconUrl`, proxyIconUrl)

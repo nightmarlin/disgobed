@@ -98,7 +98,7 @@ structure
 (This function fails silently)
 */
 func (a *AuthorBuilder) SetProxyIconURL(proxyIconUrl string) *AuthorBuilder {
-	if validation.checkValidIconURL(proxyIconUrl) {
+	if validation.CheckValidIconURL(proxyIconUrl) {
 		a.ProxyIconURL = proxyIconUrl
 	} else {
 		a.addError(validation.InvalidUrlErrTemplateString, `author proxyIconUrl`, proxyIconUrl)
