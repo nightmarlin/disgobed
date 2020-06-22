@@ -3,6 +3,7 @@ package disgobed
 import (
 	"fmt"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
@@ -59,14 +60,14 @@ will do nothing if name == ``
 (This function fails silently)
 */
 func (f *FieldBuilder) SetName(name string) *FieldBuilder {
-	if len(name) <= lowerCharLimit {
+	if len(name) <= validation.LowerCharLimit {
 		if name == `` {
-			f.addError(valueIsEmptyErrString, `field name`)
+			f.addError(validation.ValueIsEmptyErrString, `field name`)
 		} else {
 			f.Name = name
 		}
 	} else {
-		f.addError(characterCountExceedsLimitErrTemplateString, `field name`, lowerCharLimit, len(name), name)
+		f.addError(validation.CharacterCountExceedsLimitErrTemplateString, `field name`, validation.LowerCharLimit, len(name), name)
 	}
 	return f
 }
@@ -78,14 +79,14 @@ do nothing if val == ``
 (This function fails silently)
 */
 func (f *FieldBuilder) SetValue(val string) *FieldBuilder {
-	if len(val) <= middleCharLimit {
+	if len(val) <= validation.MiddleCharLimit {
 		if val == `` {
-			f.addError(valueIsEmptyErrString, `field value`)
+			f.addError(validation.ValueIsEmptyErrString, `field value`)
 		} else {
 			f.Value = val
 		}
 	} else {
-		f.addError(characterCountExceedsLimitLongErrTemplateString, `field value`, middleCharLimit, len(val))
+		f.addError(validation.CharacterCountExceedsLimitLongErrTemplateString, `field value`, validation.MiddleCharLimit, len(val))
 	}
 	return f
 }

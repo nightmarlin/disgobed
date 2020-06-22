@@ -3,6 +3,7 @@ package disgobed
 import (
 	"fmt"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
@@ -48,10 +49,10 @@ the string does not start with one of these, no URL will be added). It then retu
 (This function fails silently)
 */
 func (i *ImageBuilder) SetURL(url string) *ImageBuilder {
-	if checkValidIconURL(url) {
+	if validation.CheckValidIconURL(url) {
 		i.URL = url
 	} else {
-		i.addError(invalidUrlErrTemplateString, `image url`, url)
+		i.addError(validation.InvalidUrlErrTemplateString, `image url`, url)
 	}
 	return i
 }
@@ -62,10 +63,10 @@ the string does not start with one of these, no URL will be added). It then retu
 (This function fails silently)
 */
 func (i *ImageBuilder) SetProxyURL(proxyUrl string) *ImageBuilder {
-	if checkValidIconURL(proxyUrl) {
+	if validation.CheckValidIconURL(proxyUrl) {
 		i.ProxyURL = proxyUrl
 	} else {
-		i.addError(invalidUrlErrTemplateString, `image proxyUrl`, proxyUrl)
+		i.addError(validation.InvalidUrlErrTemplateString, `image proxyUrl`, proxyUrl)
 	}
 	return i
 }
@@ -80,7 +81,7 @@ func (i *ImageBuilder) SetHW(h int, w int) *ImageBuilder {
 		i.Height = h
 		i.Width = w
 	} else {
-		i.addError(invalidHWErrTemplateString, `image`, h, `image`, w)
+		i.addError(validation.InvalidHWErrTemplateString, `image`, h, `image`, w)
 	}
 	return i
 }
@@ -94,7 +95,7 @@ func (i *ImageBuilder) SetHeight(h int) *ImageBuilder {
 	if h > 0 {
 		i.Height = h
 	} else {
-		i.addError(valueNotBetweenErrTemplateString, `image height`, h, 0, `infinity`)
+		i.addError(validation.ValueNotBetweenErrTemplateString, `image height`, h, 0, `infinity`)
 	}
 	return i
 }
@@ -108,7 +109,7 @@ func (i *ImageBuilder) SetWidth(w int) *ImageBuilder {
 	if w > 0 {
 		i.Width = w
 	} else {
-		i.addError(valueNotBetweenErrTemplateString, `image width`, w, 0, `infinity`)
+		i.addError(validation.ValueNotBetweenErrTemplateString, `image width`, w, 0, `infinity`)
 	}
 	return i
 }

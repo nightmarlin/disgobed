@@ -3,6 +3,7 @@ package disgobed
 import (
 	"fmt"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
@@ -51,10 +52,10 @@ structure
 (This function fails silently)
 */
 func (t *ThumbnailBuilder) SetURL(url string) *ThumbnailBuilder {
-	if checkValidIconURL(url) {
+	if validation.CheckValidIconURL(url) {
 		t.URL = url
 	} else {
-		t.addError(invalidUrlErrTemplateString, `thumbnail url`, url)
+		t.addError(validation.InvalidUrlErrTemplateString, `thumbnail url`, url)
 	}
 	return t
 }
@@ -66,10 +67,10 @@ structure
 (This function fails silently)
 */
 func (t *ThumbnailBuilder) SetProxyURL(proxyUrl string) *ThumbnailBuilder {
-	if checkValidIconURL(proxyUrl) {
+	if validation.CheckValidIconURL(proxyUrl) {
 		t.URL = proxyUrl
 	} else {
-		t.addError(invalidUrlErrTemplateString, `thumbnail proxyUrl`, proxyUrl)
+		t.addError(validation.InvalidUrlErrTemplateString, `thumbnail proxyUrl`, proxyUrl)
 	}
 	return t
 }
@@ -84,7 +85,7 @@ func (t *ThumbnailBuilder) SetHW(h int, w int) *ThumbnailBuilder {
 		t.Height = h
 		t.Width = w
 	} else {
-		t.addError(invalidHWErrTemplateString, `thumbnail`, h, `thumbnail`, w)
+		t.addError(validation.InvalidHWErrTemplateString, `thumbnail`, h, `thumbnail`, w)
 	}
 	return t
 }
@@ -98,7 +99,7 @@ func (t *ThumbnailBuilder) SetHeight(h int) *ThumbnailBuilder {
 	if h > 0 {
 		t.Height = h
 	} else {
-		t.addError(valueNotBetweenErrTemplateString, `thumbnail height`, h, 0, `infinity`)
+		t.addError(validation.ValueNotBetweenErrTemplateString, `thumbnail height`, h, 0, `infinity`)
 	}
 	return t
 }
@@ -112,7 +113,7 @@ func (t *ThumbnailBuilder) SetWidth(w int) *ThumbnailBuilder {
 	if w > 0 {
 		t.Width = w
 	} else {
-		t.addError(valueNotBetweenErrTemplateString, `thumbnail width`, w, 0, `infinity`)
+		t.addError(validation.ValueNotBetweenErrTemplateString, `thumbnail width`, w, 0, `infinity`)
 	}
 	return t
 }

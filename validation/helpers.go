@@ -1,10 +1,10 @@
-package disgobed
+package validation
 
 import (
 	"strings"
 )
 
-func checkValidIconURL(url string) bool {
+func CheckValidIconURL(url string) bool {
 	return strings.HasPrefix(url, `https://`) || // Prefer https:// or attachment:// over http://
 		strings.HasPrefix(url, `attachment://`) ||
 		strings.HasPrefix(url, `http://`)
@@ -12,48 +12,48 @@ func checkValidIconURL(url string) bool {
 
 const (
 	// The lowest embed property character limit
-	lowerCharLimit = 256
+	LowerCharLimit = 256
 
 	// The middle embed property character limit
-	middleCharLimit = 1024
+	MiddleCharLimit = 1024
 
 	// The upper embed property character limit
-	upperCharLimit = 2048
+	UpperCharLimit = 2048
 
 	// The maximum total number of characters in an embed
-	maxTotalCharLimit = 6000
+	MaxTotalCharLimit = 6000
 
 	// The maximum number of embed fields
-	maxFieldCount = 25
+	MaxFieldCount = 25
 
 	// Largest acceptable colour value
-	maxColorValue = 16777215
+	MaxColorValue = 16777215
 )
 
 const (
 	// [Type Property] '[Value]' does not start with "http://" | "https://" | "attachment://"
-	invalidUrlErrTemplateString = `%v '%v' does not start with "http://" | "https://" | "attachment://"`
+	InvalidUrlErrTemplateString = `%v '%v' does not start with "http://" | "https://" | "attachment://"`
 
 	// [Type] height '[Value]' or [Type] width '[Value]' is less than or equal to 0
-	invalidHWErrTemplateString = `%v height '%v' or %v width '%v' is less than or equal to 0`
+	InvalidHWErrTemplateString = `%v height '%v' or %v width '%v' is less than or equal to 0`
 
 	// [Type Property] exceeds [Limit]: length = [Length] | '[Value]'
-	characterCountExceedsLimitErrTemplateString = `%v exceeds %v characters: length = %v | '%v'`
+	CharacterCountExceedsLimitErrTemplateString = `%v exceeds %v characters: length = %v | '%v'`
 
 	// [Type Property] exceeds [Limit]: length = [Length]
-	characterCountExceedsLimitLongErrTemplateString = `%v exceeds %v characters: length = %v`
+	CharacterCountExceedsLimitLongErrTemplateString = `%v exceeds %v characters: length = %v`
 
 	// adding field '[FieldName]' would cause field count to exceed [Limit]
-	fieldLimitReachedErrTemplateString = `adding field '%v' would cause field count to exceed %v`
+	FieldLimitReachedErrTemplateString = `adding field '%v' would cause field count to exceed %v`
 
 	// embed type '[Type]' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"
-	invalidEmbedTypeErrTemplateString = `embed type '%v' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"`
+	InvalidEmbedTypeErrTemplateString = `embed type '%v' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"`
 
 	// [Type Property] [Value] is not between [LowerLimit] and [UpperLimit]
-	valueNotBetweenErrTemplateString = `%v '%v' is not between $v and %v`
+	ValueNotBetweenErrTemplateString = `%v '%v' is not between $v and %v`
 
 	// [Type Property] should not be empty if set
-	valueIsEmptyErrString = `$v should not be empty if set`
+	ValueIsEmptyErrString = `$v should not be empty if set`
 )
 
 const (
@@ -77,9 +77,9 @@ const (
 )
 
 /*
-checkTypeValid checks if the embed type is one of the pre-determined constants and returns true if it is
+CheckTypeValid checks if the embed type is one of the pre-determined constants and returns true if it is
 */
-func checkTypeValid(embedType string) bool {
+func CheckTypeValid(embedType string) bool {
 	return embedType == RichEmbedType ||
 		embedType == ImageEmbedType ||
 		embedType == VideoEmbedType ||

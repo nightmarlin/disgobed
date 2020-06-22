@@ -3,6 +3,7 @@ package disgobed
 import (
 	"fmt"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
@@ -53,7 +54,7 @@ func (v *VideoBuilder) SetHW(h int, w int) *VideoBuilder {
 		v.Height = h
 		v.Width = w
 	} else {
-		v.addError(invalidHWErrTemplateString, `video`, h, `video`, w)
+		v.addError(validation.InvalidHWErrTemplateString, `video`, h, `video`, w)
 	}
 	return v
 }
@@ -67,7 +68,7 @@ func (v *VideoBuilder) SetHeight(h int) *VideoBuilder {
 	if h > 0 {
 		v.Height = h
 	} else {
-		v.addError(valueNotBetweenErrTemplateString, `video height`, h, 0, `infinity`)
+		v.addError(validation.ValueNotBetweenErrTemplateString, `video height`, h, 0, `infinity`)
 	}
 	return v
 }
@@ -81,7 +82,7 @@ func (v *VideoBuilder) SetWidth(w int) *VideoBuilder {
 	if w > 0 {
 		v.Width = w
 	} else {
-		v.addError(valueNotBetweenErrTemplateString, `video width`, w, 0, `infinity`)
+		v.addError(validation.ValueNotBetweenErrTemplateString, `video width`, w, 0, `infinity`)
 	}
 	return v
 }

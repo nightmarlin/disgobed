@@ -3,6 +3,7 @@ package disgobed
 import (
 	"fmt"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
@@ -50,10 +51,10 @@ the string does not start with one of these, no URL will be added). It then retu
 (This function fails silently)
 */
 func (f *FooterBuilder) SetIconURL(iconUrl string) *FooterBuilder {
-	if checkValidIconURL(iconUrl) {
+	if validation.CheckValidIconURL(iconUrl) {
 		f.IconURL = iconUrl
 	} else {
-		f.addError(invalidUrlErrTemplateString, `footer iconUrl`, iconUrl)
+		f.addError(validation.InvalidUrlErrTemplateString, `footer iconUrl`, iconUrl)
 	}
 	return f
 }
@@ -64,10 +65,10 @@ API limits FooterBuilder values to 2048 characters, so this function will do not
 (This function fails silently)
 */
 func (f *FooterBuilder) SetText(val string) *FooterBuilder {
-	if len(val) <= upperCharLimit {
+	if len(val) <= validation.UpperCharLimit {
 		f.Text = val
 	} else {
-		f.addError(characterCountExceedsLimitLongErrTemplateString, `footer text`, upperCharLimit, len(val))
+		f.addError(validation.CharacterCountExceedsLimitLongErrTemplateString, `footer text`, validation.UpperCharLimit, len(val))
 	}
 	return f
 }
@@ -79,10 +80,10 @@ structure
 (This function fails silently)
 */
 func (f *FooterBuilder) SetProxyIconURL(proxyIconUrl string) *FooterBuilder {
-	if checkValidIconURL(proxyIconUrl) {
+	if validation.checkValidIconURL(proxyIconUrl) {
 		f.ProxyIconURL = proxyIconUrl
 	} else {
-		f.addError(invalidUrlErrTemplateString, `footer proxyIconUrl`, proxyIconUrl)
+		f.addError(validation.InvalidUrlErrTemplateString, `footer proxyIconUrl`, proxyIconUrl)
 	}
 	return f
 }

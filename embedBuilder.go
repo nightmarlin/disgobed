@@ -107,10 +107,10 @@ characters, so this function will do nothing if len(title) > 256
 (This function fails silently)
 */
 func (e *EmbedBuilder) SetTitle(title string) *EmbedBuilder {
-	if len(title) <= lowerCharLimit {
+	if len(title) <= validation.LowerCharLimit {
 		e.Title = title
 	} else {
-		e.addError(characterCountExceedsLimitErrTemplateString, `embed title`, lowerCharLimit, len(title), title)
+		e.addError(validation.CharacterCountExceedsLimitErrTemplateString, `embed title`, validation.LowerCharLimit, len(title), title)
 	}
 	return e
 }
@@ -121,10 +121,10 @@ descriptions to 2048 characters, so this function will do nothing if len(desc) >
 (This function fails silently)
 */
 func (e *EmbedBuilder) SetDescription(desc string) *EmbedBuilder {
-	if len(desc) <= upperCharLimit {
+	if len(desc) <= validation.UpperCharLimit {
 		e.Description = desc
 	} else {
-		e.addError(characterCountExceedsLimitLongErrTemplateString, `embed description`, upperCharLimit, len(desc))
+		e.addError(validation.CharacterCountExceedsLimitLongErrTemplateString, `embed description`, validation.UpperCharLimit, len(desc))
 	}
 	return e
 }
@@ -143,10 +143,10 @@ Color values must be between 0 and 16777215 otherwise the change will not be reg
 (This function fails silently)
 */
 func (e *EmbedBuilder) SetColor(color int) *EmbedBuilder {
-	if color >= 0 && color < maxColorValue {
+	if color >= 0 && color < validation.MaxColorValue {
 		e.Color = color
 	} else {
-		e.addError(valueNotBetweenErrTemplateString, `embed color`, color, 0, maxColorValue)
+		e.addError(validation.ValueNotBetweenErrTemplateString, `embed color`, color, 0, validation.MaxColorValue)
 	}
 	return e
 }
@@ -246,10 +246,10 @@ already been reached
 (This function fails silently)
 */
 func (e *EmbedBuilder) AddRawField(field *disgord.EmbedField) *EmbedBuilder {
-	if len(e.Fields) < maxFieldCount {
+	if len(e.Fields) < validation.MaxFieldCount {
 		e.Fields = append(e.Fields, field)
 	} else {
-		e.addError(fieldLimitReachedErrTemplateString, field.Name, maxFieldCount)
+		e.addError(validation.FieldLimitReachedErrTemplateString, field.Name, validation.MaxFieldCount)
 	}
 	return e
 }
@@ -380,10 +380,10 @@ nothing. It then returns the pointer to the embed
 (This function fails silently)
 */
 func (e *EmbedBuilder) SetType(embedType string) *EmbedBuilder {
-	if checkTypeValid(embedType) {
+	if validation.CheckTypeValid(embedType) {
 		e.Type = embedType
 	} else {
-		e.addError(invalidEmbedTypeErrTemplateString, embedType)
+		e.addError(validation.InvalidEmbedTypeErrTemplateString, embedType)
 	}
 	return e
 }

@@ -3,6 +3,7 @@ package disgobed
 import (
 	"fmt"
 
+	"github.com/Nightmarlin/disgobed/validation"
 	"github.com/andersfylling/disgord"
 )
 
@@ -21,6 +22,14 @@ sent. Finalize will also purge the error cache!
 func (a *AuthorBuilder) Finalize() (*disgord.EmbedAuthor, *[]error) {
 	defer func(a *AuthorBuilder) { a.Errors = nil }(a)
 	return a.EmbedAuthor, a.Errors
+}
+
+/*
+Generate strips aways the extra functions and returns the wrapped type without the cached validation errors. Allows for
+immediate addition to a message
+*/
+func (a *AuthorBuilder) Generate() *disgord.EmbedAuthor {
+	return a.EmbedAuthor
 }
 
 /*
@@ -59,10 +68,10 @@ the string does not start with one of these, no URL will be added). It then retu
 (This function fails silently)
 */
 func (a *AuthorBuilder) SetIconURL(iconUrl string) *AuthorBuilder {
-	if checkValidIconURL(iconUrl) {
+	if validation.CheckValidIconURL(iconUrl) {
 		a.IconURL = iconUrl
 	} else {
-		a.addError(invalidUrlErrTemplateString, `author iconUrl`, iconUrl)
+		a.addError(validation.InvalidUrlErrTemplateString, `author iconUrl`, iconUrl)
 	}
 	return a
 }
@@ -77,7 +86,7 @@ func (a *AuthorBuilder) SetName(name string) *AuthorBuilder {
 	if len(name) <= limit {
 		a.Name = name
 	} else {
-		a.addError(characterCountExceedsLimitErrTemplateString, `author name`, limit, len(name), name)
+		a.addError(validation.CharacterCountExceedsLimitErrTemplateString, `author name`, limit, len(name), name)
 	}
 	return a
 }
@@ -89,10 +98,10 @@ structure
 (This function fails silently)
 */
 func (a *AuthorBuilder) SetProxyIconURL(proxyIconUrl string) *AuthorBuilder {
-	if checkValidIconURL(proxyIconUrl) {
+	if validation.checkValidIconURL(proxyIconUrl) {
 		a.ProxyIconURL = proxyIconUrl
 	} else {
-		a.addError(invalidUrlErrTemplateString, `author proxyIconUrl`, proxyIconUrl)
+		a.addError(validation.InvalidUrlErrTemplateString, `author proxyIconUrl`, proxyIconUrl)
 	}
 	return a
 }
