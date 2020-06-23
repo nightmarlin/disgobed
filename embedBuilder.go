@@ -34,9 +34,9 @@ type EmbedBuilder struct {
 }
 
 /*
-ValidateEmbed returns whether or not discord is likely accept the embed attached to it. If discord is unlikely to
+Validate returns whether or not discord is likely accept the embed attached to it. If discord is unlikely to
 accept the embed, it returns a list of reasons why. If msg is not nil, the checker will also validate `attachment://`
-urls
+urls message
 */
 func (e *EmbedBuilder) Validate(msg *disgord.Message) *[]error {
 	toCheck, errs := e.Finalize()

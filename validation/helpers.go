@@ -4,55 +4,68 @@ import (
 	"strings"
 )
 
+// CheckValidIconURL checks that discord will accept the given url in the restricted fields
 func CheckValidIconURL(url string) bool {
-	return strings.HasPrefix(url, `https://`) || // Prefer https:// or attachment:// over http://
-		strings.HasPrefix(url, `attachment://`) ||
-		strings.HasPrefix(url, `http://`)
+	for _, pfx := range acceptablePrefixes {
+		if strings.HasPrefix(url, pfx) {
+			return true
+		}
+	}
+	return false
 }
 
+var (
+	// A list of the prefixes specific discord URLs will accept
+	acceptablePrefixes = [3]string{
+		`https://`, // Prefer `https://`
+		`attachment://`,
+		`http://`,
+	}
+)
+
 const (
-	// The lowest embed property character limit
+	// LowerCharLimit is the lowest embed property character limit
 	LowerCharLimit = 256
 
-	// The middle embed property character limit
+	// MiddleCharLimit is the middle embed property character limit
 	MiddleCharLimit = 1024
 
-	// The upper embed property character limit
+	// UpperCharLimit is the upper embed property character limit
 	UpperCharLimit = 2048
 
-	// The maximum total number of characters in an embed
+	// MaxTotalCharLimit is the maximum total number of characters in an embed
 	MaxTotalCharLimit = 6000
 
-	// The maximum number of embed fields
+	// MaxFieldCount is the maximum number of embed fields
 	MaxFieldCount = 25
 
-	// Largest acceptable colour value
+	// MaxColorValue is the largest acceptable colour value
 	MaxColorValue = 16777215
 )
 
 const (
-	// [Type Property] '[Value]' does not start with "http://" | "https://" | "attachment://"
+	// InvalidUrlErrTemplateString: [Type Property] '[Value]' does not start with "http://" | "https://" | "attachment://"
 	InvalidUrlErrTemplateString = `%v '%v' does not start with "http://" | "https://" | "attachment://"`
 
-	// [Type] height '[Value]' or [Type] width '[Value]' is less than or equal to 0
+	// InvalidHWErrTemplateString:  [Type] height '[Value]' or [Type] width '[Value]' is less than or equal to 0
 	InvalidHWErrTemplateString = `%v height '%v' or %v width '%v' is less than or equal to 0`
 
-	// [Type Property] exceeds [Limit]: length = [Length] | '[Value]'
+	// CharacterCountExceedsLimitErrTemplateString: [Type Property] exceeds [Limit]: length = [Length] | '[Value]'
 	CharacterCountExceedsLimitErrTemplateString = `%v exceeds %v characters: length = %v | '%v'`
 
-	// [Type Property] exceeds [Limit]: length = [Length]
+	// CharacterCountExceedsLimitLongErrTemplateString: [Type Property] exceeds [Limit]: length = [Length]
 	CharacterCountExceedsLimitLongErrTemplateString = `%v exceeds %v characters: length = %v`
 
-	// adding field '[FieldName]' would cause field count to exceed [Limit]
+	// FieldLimitReachedErrTemplateString: adding field '[FieldName]' would cause field count to exceed [Limit]
 	FieldLimitReachedErrTemplateString = `adding field '%v' would cause field count to exceed %v`
 
-	// embed type '[Type]' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"
+	// InvalidEmbedTypeErrTemplateString: embed type '[Type]' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"
 	InvalidEmbedTypeErrTemplateString = `embed type '%v' is not one of "rich" | "image" | "video" | "gifv" | "link" | "article"`
 
-	// [Type Property] [Value] is not between [LowerLimit] and [UpperLimit]
+	// ValueNotBetweenErrTemplateString: [Type Property] [Value] is not between [LowerLimit] and [UpperLimit]
 	ValueNotBetweenErrTemplateString = `%v '%v' is not between %v and %v`
 
-	// [Type Property] should not be empty if set
+	// ValueIsEmptyErrString: [Type Property] should not be empty if set
 	ValueIsEmptyErrString = `%v should not be empty if set`
 )
 
